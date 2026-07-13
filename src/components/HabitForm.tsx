@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Periodicity } from '../types';
+import { Habit, Periodicity } from '../types';
 import { EMOJI_CATEGORIES } from '../emojis';
 import { WEEKDAY_LETTERS, useI18n } from '../i18n';
 import { theme } from '../theme';
@@ -39,20 +39,26 @@ interface Props {
     place?: string;
     notes?: string;
   }) => void;
+  /** si se pasa, el formulario edita este hábito (aparece abierto y precargado) */
+  initial?: Habit;
+  onCancel?: () => void;
 }
 
-export default function HabitForm({ onSave }: Props) {
+export default function HabitForm({ onSave, initial, onCancel }: Props) {
   const { lang, t } = useI18n();
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [emoji, setEmoji] = useState<string>('');
+  const editing = !!initial;
+  const [open, setOpen] = useState(editing);
+  const [name, setName] = useState(initial?.name ?? '');
+  const [emoji, setEmoji] = useState<string>(initial?.emoji ?? '');
   const [customEmoji, setCustomEmoji] = useState('');
   const [category, setCategory] = useState(0);
-  const [daily, setDaily] = useState(true);
-  const [days, setDays] = useState<number[]>([]);
-  const [time, setTime] = useState('');
-  const [place, setPlace] = useState('');
-  const [notes, setNotes] = useState('');
+  const [daily, setDaily] = useState(initial ? initial.periodicity.type === 'daily' : true);
+  const [days, setDays] = useState<number[]>(
+    initial?.periodicity.type === 'weekdays' ? initial.periodicity.days : []
+  );
+  const [time, setTime] = useState(initial?.time ?? '');
+  const [place, setPlace] = useState(initial?.place ?? '');
+  const [notes, setNotes] = useState(initial?.notes ?? '');
 
   const valid = name.trim().length > 0 && emoji !== '' && (daily || days.length > 0);
 
@@ -67,6 +73,7 @@ export default function HabitForm({ onSave }: Props) {
     setPlace('');
     setNotes('');
     setOpen(false);
+    onCancel?.();
   };
 
   const save = () => {
@@ -87,7 +94,7 @@ export default function HabitForm({ onSave }: Props) {
       prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
     );
 
-  if (!open) {
+  if (!open && !editing) {
     return (
       <Pressable style={styles.collapsed} onPress={() => setOpen(true)}>
         <Text style={styles.collapsedPlus}>＋</Text>
@@ -98,7 +105,7 @@ export default function HabitForm({ onSave }: Props) {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{t('newHabit')}</Text>
+      <Text style={styles.title}>{editing ? t('editHabit') : t('newHabit')}</Text>
 
       <Text style={styles.label}>{t('habitLabel')}</Text>
       <TextInput
@@ -250,7 +257,9 @@ export default function HabitForm({ onSave }: Props) {
             end={{ x: 1, y: 1 }}
             style={styles.saveBtn}
           >
-            <Text style={styles.saveText}>{t('saveHabit')}</Text>
+            <Text style={styles.saveText}>
+              {editing ? t('saveChanges') : t('saveHabit')}
+            </Text>
           </LinearGradient>
         </Pressable>
       </View>

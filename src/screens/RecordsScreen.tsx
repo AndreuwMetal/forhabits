@@ -18,7 +18,8 @@ type ViewState =
   | { kind: 'day'; dateKey: string };
 
 export default function RecordsScreen() {
-  const { habits, logs, firstUse, addHabit, removeHabit, saveDayLog } = useStore();
+  const { habits, logs, firstUse, addHabit, updateHabit, removeHabit, saveDayLog } =
+    useStore();
   const { lang, t } = useI18n();
   const calRef = useRef<MonthCalendarRef>(null);
   const [legendVisible, setLegendVisible] = useState(false);
@@ -107,6 +108,7 @@ export default function RecordsScreen() {
           removeHabit(id);
           scheduleDailyLogs(habits.length - 1, lang);
         }}
+        onUpdate={(id, data) => updateHabit(id, data)}
       />
     </View>
   );

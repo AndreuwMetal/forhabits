@@ -9,10 +9,20 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Habit, Logs } from '../types';
+import { Habit, Logs, Periodicity } from '../types';
 import HabitMonthTable from './HabitMonthTable';
+import HabitForm from './HabitForm';
 import { periodicityLabel, useI18n } from '../i18n';
 import { theme } from '../theme';
+
+export interface HabitEdit {
+  name: string;
+  emoji: string;
+  periodicity: Periodicity;
+  time?: string;
+  place?: string;
+  notes?: string;
+}
 
 interface Props {
   visible: boolean;
@@ -21,6 +31,7 @@ interface Props {
   firstUse: Date;
   onClose: () => void;
   onDelete: (id: string) => void;
+  onUpdate: (id: string, data: HabitEdit) => void;
 }
 
 export default function HabitsLegendModal({
@@ -30,9 +41,11 @@ export default function HabitsLegendModal({
   firstUse,
   onClose,
   onDelete,
+  onUpdate,
 }: Props) {
   const { lang, t } = useI18n();
   const [infoId, setInfoId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Habit | null>(null);
 
   const confirmDelete = (h: Habit) => {
     if (Platform.OS === 'web') {
@@ -50,6 +63,20 @@ export default function HabitsLegendModal({
       <Pressable style={styles.backdrop} onPress={onClose} />
       <View style={styles.sheet}>
         <View style={styles.handle} />
+        {editing ? (
+          <ScrollView style={styles.editPane}>
+            <HabitForm
+              key={editing.id}
+              initial={editing}
+              onCancel={() => setEditing(null)}
+              onSave={(data) => {
+                onUpdate(editing.id, data);
+                setEditing(null);
+              }}
+            />
+          </ScrollView>
+        ) : (
+          <>
         <Text style={styles.title}>{t('habits')}</Text>
         {habits.length === 0 ? (
           <Text style={styles.empty}>{t('habitsEmpty')}</Text>
@@ -62,6 +89,9 @@ export default function HabitsLegendModal({
                     <Text style={styles.emoji}>{h.emoji}</Text>
                     <Text style={styles.name}>{h.name}</Text>
                   </View>
+                  <Pressable style={styles.editBtn} onPress={() => setEditing(h)}>
+                    <Text style={styles.editText}>✏️</Text>
+                  </Pressable>
                   <Pressable
                     style={styles.infoBtn}
                     onPress={() => setInfoId(infoId === h.id ? null : h.id)}
@@ -97,6 +127,8 @@ export default function HabitsLegendModal({
         <Pressable style={styles.closeBtn} onPress={onClose}>
           <Text style={styles.closeText}>{t('close')}</Text>
         </Pressable>
+          </>
+        )}
       </View>
     </Modal>
   );
@@ -153,6 +185,9 @@ const styles = StyleSheet.create({
   },
   deleteBtn: { padding: 4 },
   deleteText: { fontSize: 16 },
+  editBtn: { padding: 4 },
+  editText: { fontSize: 15 },
+  editPane: { flexGrow: 0 },
   infoBox: { marginTop: 6, marginLeft: 34, gap: 4 },
   periodicity: {
     color: theme.colors.subtext,

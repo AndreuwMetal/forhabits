@@ -19,6 +19,7 @@ interface Store {
   /** ISO del día en que se abrió la app por primera vez */
   firstUse: string;
   addHabit: (h: Omit<Habit, 'id' | 'createdAt'>) => void;
+  updateHabit: (id: string, data: Partial<Omit<Habit, 'id' | 'createdAt'>>) => void;
   removeHabit: (id: string) => void;
   saveDayLog: (dateKey: string, log: DayLog) => void;
 }
@@ -78,6 +79,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [habits, persistHabits]
   );
 
+  const updateHabit = useCallback(
+    (id: string, data: Partial<Omit<Habit, 'id' | 'createdAt'>>) => {
+      persistHabits(
+        habits.map((h) => (h.id === id ? { ...h, ...data, id: h.id, createdAt: h.createdAt } : h))
+      );
+    },
+    [habits, persistHabits]
+  );
+
   const removeHabit = useCallback(
     (id: string) => {
       persistHabits(habits.filter((h) => h.id !== id));
@@ -94,7 +104,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <StoreContext.Provider
-      value={{ ready, habits, logs, firstUse, addHabit, removeHabit, saveDayLog }}
+      value={{ ready, habits, logs, firstUse, addHabit, updateHabit, removeHabit, saveDayLog }}
     >
       {children}
     </StoreContext.Provider>

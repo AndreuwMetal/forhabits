@@ -67,6 +67,8 @@ const es = {
   registeredHabits: 'Tus hábitos registrados',
   notifBody: '¿Qué hábitos has completado hoy? Toca para registrarlos.',
   language: 'Idioma',
+  editHabit: 'Editar hábito',
+  saveChanges: 'Guardar cambios',
 };
 
 export type StringKey = keyof typeof es;
@@ -121,6 +123,8 @@ const en: Record<StringKey, string> = {
   registeredHabits: 'Your registered habits',
   notifBody: 'Which habits did you complete today? Tap to log them.',
   language: 'Language',
+  editHabit: 'Edit habit',
+  saveChanges: 'Save changes',
 };
 
 const STRINGS: Record<Lang, Record<StringKey, string>> = { es, en };
