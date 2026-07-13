@@ -171,8 +171,17 @@ const MonthCalendar = forwardRef<MonthCalendarRef, Props>(function MonthCalendar
 export default MonthCalendar;
 
 const styles = StyleSheet.create({
-  content: { paddingBottom: 90 },
-  month: { marginBottom: MONTH_MARGIN, height: MONTH_HEIGHT - MONTH_MARGIN },
+  content: { paddingBottom: 100 },
+  month: {
+    marginBottom: MONTH_MARGIN,
+    height: MONTH_HEIGHT - MONTH_MARGIN,
+    marginHorizontal: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    overflow: 'hidden',
+  },
   monthTitle: {
     height: TITLE_HEIGHT,
     lineHeight: TITLE_HEIGHT,
@@ -205,7 +214,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  todayCircle: { backgroundColor: theme.colors.today },
+  todayCircle: {
+    backgroundColor: theme.colors.today,
+    shadowColor: theme.colors.today,
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 6,
+  },
   dayNum: { fontSize: 15, color: theme.colors.text },
   todayNum: { color: '#fff', fontWeight: '700' },
   emojis: {

@@ -165,7 +165,7 @@ export default function MonthView({
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.colors.bg },
+  root: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   backBtn: { flexDirection: 'row', alignItems: 'center', padding: 4 },
-  backChevron: { color: theme.colors.today, fontSize: 28, marginRight: 4, lineHeight: 30 },
-  backText: { color: theme.colors.today, fontSize: 17 },
+  backChevron: { color: theme.colors.cyan, fontSize: 28, marginRight: 4, lineHeight: 30 },
+  backText: { color: theme.colors.cyan, fontSize: 17, fontWeight: '700' },
   animPane: { flex: 1 },
   monthTitle: {
     fontSize: 34,
@@ -214,7 +214,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  todayCircle: { backgroundColor: theme.colors.today },
+  todayCircle: {
+    backgroundColor: theme.colors.today,
+    shadowColor: theme.colors.today,
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 6,
+  },
   dayNum: { fontSize: 16, color: theme.colors.text },
   todayNum: { color: '#fff', fontWeight: '700' },
   cellEmojis: {

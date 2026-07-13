@@ -7,6 +7,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Periodicity } from '../types';
 import { EMOJI_CATEGORIES } from '../emojis';
 import { theme } from '../theme';
@@ -194,11 +195,18 @@ export default function HabitForm({ onSave }: Props) {
           <Text style={styles.cancelText}>Cancelar</Text>
         </Pressable>
         <Pressable
-          style={[styles.saveBtn, !valid && styles.saveDisabled]}
+          style={[styles.saveWrap, !valid && styles.saveDisabled]}
           onPress={save}
           disabled={!valid}
         >
-          <Text style={styles.saveText}>Guardar hábito</Text>
+          <LinearGradient
+            colors={[...theme.gradients.primary]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.saveBtn}
+          >
+            <Text style={styles.saveText}>Guardar hábito</Text>
+          </LinearGradient>
         </Pressable>
       </View>
     </View>
@@ -318,12 +326,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.card,
   },
   cancelText: { color: theme.colors.subtext, fontWeight: '600' },
+  saveWrap: { flex: 2, borderRadius: 12, overflow: 'hidden' },
   saveBtn: {
-    flex: 2,
     padding: 12,
-    borderRadius: 10,
     alignItems: 'center',
-    backgroundColor: theme.colors.primary,
   },
   saveDisabled: { opacity: 0.4 },
   saveText: { color: '#fff', fontWeight: '700', fontSize: 15 },

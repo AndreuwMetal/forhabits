@@ -175,7 +175,7 @@ export default function DayView({
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.colors.bg },
+  root: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   backBtn: { flexDirection: 'row', alignItems: 'center', padding: 4 },
-  backChevron: { color: theme.colors.today, fontSize: 28, marginRight: 4, lineHeight: 30 },
-  backText: { color: theme.colors.today, fontSize: 17 },
+  backChevron: { color: theme.colors.cyan, fontSize: 28, marginRight: 4, lineHeight: 30 },
+  backText: { color: theme.colors.cyan, fontSize: 17, fontWeight: '700' },
   animPane: { flex: 1 },
   dayTitle: {
     fontSize: 22,

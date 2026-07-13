@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { buildAdvice, AdviceMode, LawAdvice } from '../advisor';
 import { useStore } from '../store';
 import { theme } from '../theme';
@@ -93,8 +94,15 @@ export default function ApplyScreen() {
             onSubmitEditing={() => consult(query)}
             returnKeyType="search"
           />
-          <Pressable style={styles.goBtn} onPress={() => consult(query)}>
-            <Text style={styles.goText}>Asesorar</Text>
+          <Pressable style={styles.goWrap} onPress={() => consult(query)}>
+            <LinearGradient
+              colors={[...theme.gradients.primary]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.goBtn}
+            >
+              <Text style={styles.goText}>Asesorar</Text>
+            </LinearGradient>
           </Pressable>
         </View>
 
@@ -128,9 +136,14 @@ export default function ApplyScreen() {
                     style={styles.lawHeader}
                     onPress={() => setOpenLaw(open ? null : law.id)}
                   >
-                    <View style={[styles.lawBadge, { backgroundColor: color }]}>
+                    <LinearGradient
+                      colors={[...(theme.lawGradients[law.id] ?? theme.gradients.primary)]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.lawBadge}
+                    >
                       <Text style={styles.lawNumber}>{law.number}</Text>
-                    </View>
+                    </LinearGradient>
                     <View style={styles.lawTitleBox}>
                       <Text style={styles.lawTitle}>{law.titleEs}</Text>
                       {!open && (
@@ -186,7 +199,7 @@ export default function ApplyScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.colors.bg },
+  root: { flex: 1 },
   scroll: { flex: 1 },
   content: { padding: 16, paddingBottom: 60 },
   heading: { fontSize: 22, fontWeight: '700', color: theme.colors.text },
@@ -211,13 +224,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.colors.text,
   },
+  goWrap: { borderRadius: 12, overflow: 'hidden' },
   goBtn: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 12,
     paddingHorizontal: 16,
     justifyContent: 'center',
+    flex: 1,
   },
-  goText: { color: '#fff', fontWeight: '700' },
+  goText: { color: '#fff', fontWeight: '800' },
   suggestions: { marginTop: 8, gap: 6 },
   suggestion: {
     padding: 12,

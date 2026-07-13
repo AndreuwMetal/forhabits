@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import MonthCalendar, { MonthCalendarRef } from '../components/MonthCalendar';
 import HabitForm from '../components/HabitForm';
+import HeroCard from '../components/HeroCard';
 import HabitsLegendModal from '../components/HabitsLegendModal';
 import MonthView from './MonthView';
 import DayView from './DayView';
@@ -28,8 +29,6 @@ export default function RecordsScreen() {
   const onToday = () => {
     if (view.kind === 'list') {
       setView({ kind: 'month', month: startOfMonth(new Date()) });
-    } else if (view.kind === 'month') {
-      setView({ kind: 'day', dateKey: toKey(new Date()) });
     } else {
       setView({ kind: 'day', dateKey: toKey(new Date()) });
     }
@@ -46,12 +45,15 @@ export default function RecordsScreen() {
           onDayPress={(dateKey) => setView({ kind: 'day', dateKey })}
           onMonthTitlePress={(month) => setView({ kind: 'month', month })}
           ListHeaderComponent={
-            <HabitForm
-              onSave={(data) => {
-                addHabit(data);
-                scheduleDailyLogs(habits.length + 1);
-              }}
-            />
+            <View>
+              <HeroCard habits={habits} logs={logs} />
+              <HabitForm
+                onSave={(data) => {
+                  addHabit(data);
+                  scheduleDailyLogs(habits.length + 1);
+                }}
+              />
+            </View>
           }
         />
       )}
@@ -82,12 +84,14 @@ export default function RecordsScreen() {
         />
       )}
 
-      <View style={styles.toolbar}>
-        <Pressable style={styles.toolBtn} onPress={onToday}>
-          <Text style={styles.toolText}>Today</Text>
+      {/* Dock flotante */}
+      <View style={styles.dock}>
+        <Pressable style={styles.dockBtn} onPress={onToday}>
+          <Text style={styles.dockText}>Today</Text>
         </Pressable>
-        <Pressable style={styles.toolBtn} onPress={() => setLegendVisible(true)}>
-          <Text style={styles.toolText}>Habits</Text>
+        <View style={styles.dockDivider} />
+        <Pressable style={styles.dockBtn} onPress={() => setLegendVisible(true)}>
+          <Text style={styles.dockText}>Habits</Text>
         </Pressable>
       </View>
 
@@ -105,20 +109,30 @@ export default function RecordsScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.colors.bg },
-  toolbar: {
+  root: { flex: 1 },
+  dock: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    bottom: 18,
+    alignSelf: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    backgroundColor: 'rgba(0,0,0,0.92)',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: theme.colors.border,
+    alignItems: 'center',
+    backgroundColor: 'rgba(20,10,40,0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    shadowColor: theme.colors.primary,
+    shadowOpacity: 0.6,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 10,
   },
-  toolBtn: { padding: 6 },
-  toolText: { color: theme.colors.today, fontSize: 17, fontWeight: '600' },
+  dockBtn: { paddingHorizontal: 22, paddingVertical: 10 },
+  dockText: { color: theme.colors.cyan, fontSize: 16, fontWeight: '800' },
+  dockDivider: {
+    width: 1,
+    height: 22,
+    backgroundColor: theme.colors.border,
+  },
 });
