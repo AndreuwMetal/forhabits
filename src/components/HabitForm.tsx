@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
 import {
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
 import { Periodicity } from '../types';
+import { EMOJI_CATEGORIES } from '../emojis';
 import { theme } from '../theme';
-
-const EMOJIS = [
-  '🏃', '📚', '🧘', '💪', '💧', '🥗', '😴', '🦷',
-  '✍️', '🎸', '🎨', '🧠', '💻', '🌅', '🚭', '💰',
-  '🧹', '🙏', '🚴', '🏊', '📵', '🌱', '❤️', '⭐',
-];
 
 const WEEKDAYS: { label: string; day: number }[] = [
   { label: 'L', day: 1 },
@@ -25,6 +21,20 @@ const WEEKDAYS: { label: string; day: number }[] = [
   { label: 'D', day: 0 },
 ];
 
+/** Extrae el último emoji (grafema) de un texto escrito con el teclado */
+function lastGrapheme(text: string): string {
+  const t = text.trim();
+  if (!t) return '';
+  const Seg = (Intl as any)?.Segmenter;
+  if (Seg) {
+    const segs = Array.from(new Seg('es', { granularity: 'grapheme' }).segment(t));
+    const last = segs[segs.length - 1] as { segment: string } | undefined;
+    return last?.segment ?? '';
+  }
+  const chars = Array.from(t);
+  return chars[chars.length - 1] ?? '';
+}
+
 interface Props {
   onSave: (data: { name: string; emoji: string; periodicity: Periodicity }) => void;
 }
@@ -33,6 +43,8 @@ export default function HabitForm({ onSave }: Props) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [emoji, setEmoji] = useState<string>('');
+  const [customEmoji, setCustomEmoji] = useState('');
+  const [category, setCategory] = useState(0);
   const [daily, setDaily] = useState(true);
   const [days, setDays] = useState<number[]>([]);
 
@@ -41,6 +53,8 @@ export default function HabitForm({ onSave }: Props) {
   const reset = () => {
     setName('');
     setEmoji('');
+    setCustomEmoji('');
+    setCategory(0);
     setDaily(true);
     setDays([]);
     setOpen(false);
@@ -84,17 +98,56 @@ export default function HabitForm({ onSave }: Props) {
       />
 
       <Text style={styles.label}>Emoticono</Text>
-      <View style={styles.emojiGrid}>
-        {EMOJIS.map((e) => (
+      <View style={styles.emojiPickRow}>
+        <View style={styles.emojiPreview}>
+          <Text style={styles.emojiPreviewText}>{emoji || '·'}</Text>
+        </View>
+        <TextInput
+          style={[styles.input, styles.emojiInput]}
+          placeholder="Escribe cualquier emoji con tu teclado…"
+          placeholderTextColor={theme.colors.subtext}
+          value={customEmoji}
+          onChangeText={(t) => {
+            setCustomEmoji(t);
+            const g = lastGrapheme(t);
+            if (g) setEmoji(g);
+          }}
+        />
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.catBar}
+        contentContainerStyle={styles.catBarContent}
+      >
+        {EMOJI_CATEGORIES.map((c, i) => (
           <Pressable
-            key={e}
-            style={[styles.emojiCell, emoji === e && styles.emojiSelected]}
-            onPress={() => setEmoji(e)}
+            key={c.name}
+            style={[styles.catChip, category === i && styles.catChipActive]}
+            onPress={() => setCategory(i)}
           >
-            <Text style={styles.emoji}>{e}</Text>
+            <Text style={[styles.catText, category === i && styles.catTextActive]}>
+              {c.name}
+            </Text>
           </Pressable>
         ))}
-      </View>
+      </ScrollView>
+      <ScrollView style={styles.emojiPane} nestedScrollEnabled>
+        <View style={styles.emojiGrid}>
+          {EMOJI_CATEGORIES[category].emojis.map((e, i) => (
+            <Pressable
+              key={`${e}-${i}`}
+              style={[styles.emojiCell, emoji === e && styles.emojiSelected]}
+              onPress={() => {
+                setEmoji(e);
+                setCustomEmoji('');
+              }}
+            >
+              <Text style={styles.emoji}>{e}</Text>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
 
       <Text style={styles.label}>Periodicidad</Text>
       <View style={styles.periodRow}>
@@ -193,6 +246,31 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: theme.colors.border,
   },
+  emojiPickRow: { flexDirection: 'row', gap: 8, alignItems: 'center' },
+  emojiPreview: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: theme.colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: theme.colors.primary,
+  },
+  emojiPreviewText: { fontSize: 24, color: theme.colors.subtext },
+  emojiInput: { flex: 1 },
+  catBar: { marginTop: 10, flexGrow: 0 },
+  catBarContent: { gap: 6 },
+  catChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: theme.colors.card,
+  },
+  catChipActive: { backgroundColor: theme.colors.primary },
+  catText: { fontSize: 13, color: theme.colors.subtext, fontWeight: '600' },
+  catTextActive: { color: '#fff' },
+  emojiPane: { maxHeight: 176, marginTop: 8 },
   emojiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   emojiCell: {
     width: 40,
@@ -205,7 +283,7 @@ const styles = StyleSheet.create({
   emojiSelected: {
     borderWidth: 2,
     borderColor: theme.colors.primary,
-    backgroundColor: '#EDEDFC',
+    backgroundColor: '#3A3A5C',
   },
   emoji: { fontSize: 20 },
   periodRow: { flexDirection: 'row', gap: 8 },

@@ -3,56 +3,84 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import MonthCalendar, { MonthCalendarRef } from '../components/MonthCalendar';
 import HabitForm from '../components/HabitForm';
 import HabitsLegendModal from '../components/HabitsLegendModal';
-import DailyLogSheet from '../components/DailyLogSheet';
+import MonthView from './MonthView';
+import DayView from './DayView';
 import { useStore } from '../store';
 import { scheduleDailyLogs } from '../notifications';
 import { theme } from '../theme';
-import { fromKey, toKey } from '../types';
+import { fromKey, startOfMonth, toKey } from '../types';
+
+type ViewState =
+  | { kind: 'list' }
+  | { kind: 'month'; month: Date }
+  | { kind: 'day'; dateKey: string };
 
 export default function RecordsScreen() {
-  const { habits, logs, addHabit, removeHabit } = useStore();
+  const { habits, logs, firstUse, addHabit, removeHabit, saveDayLog } = useStore();
   const calRef = useRef<MonthCalendarRef>(null);
   const [legendVisible, setLegendVisible] = useState(false);
-  const [dailyLogDate, setDailyLogDate] = useState<string | null>(null);
-  const [highlightToday, setHighlightToday] = useState(false);
-  const lastTodayPress = useRef(0);
+  const [view, setView] = useState<ViewState>({ kind: 'list' });
 
+  const firstUseDate = new Date(firstUse);
+  const minDateKey = toKey(firstUseDate);
+
+  // Today: lista → mes actual ampliado → día de hoy (y desde día, salta a hoy)
   const onToday = () => {
-    const now = Date.now();
-    if (now - lastTodayPress.current < 2500) {
-      // segundo click: resalta el día de hoy
-      setHighlightToday(true);
-      setTimeout(() => setHighlightToday(false), 1800);
+    if (view.kind === 'list') {
+      setView({ kind: 'month', month: startOfMonth(new Date()) });
+    } else if (view.kind === 'month') {
+      setView({ kind: 'day', dateKey: toKey(new Date()) });
     } else {
-      calRef.current?.scrollToCurrentMonth();
+      setView({ kind: 'day', dateKey: toKey(new Date()) });
     }
-    lastTodayPress.current = now;
-  };
-
-  const onDayPress = (dateKey: string) => {
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
-    if (fromKey(dateKey) > today) return; // no se registran días futuros
-    setDailyLogDate(dateKey);
   };
 
   return (
     <View style={styles.root}>
-      <MonthCalendar
-        ref={calRef}
-        habits={habits}
-        logs={logs}
-        highlightToday={highlightToday}
-        onDayPress={onDayPress}
-        ListHeaderComponent={
-          <HabitForm
-            onSave={(data) => {
-              addHabit(data);
-              scheduleDailyLogs(habits.length + 1);
-            }}
-          />
-        }
-      />
+      {view.kind === 'list' && (
+        <MonthCalendar
+          ref={calRef}
+          habits={habits}
+          logs={logs}
+          firstUse={firstUseDate}
+          onDayPress={(dateKey) => setView({ kind: 'day', dateKey })}
+          onMonthTitlePress={(month) => setView({ kind: 'month', month })}
+          ListHeaderComponent={
+            <HabitForm
+              onSave={(data) => {
+                addHabit(data);
+                scheduleDailyLogs(habits.length + 1);
+              }}
+            />
+          }
+        />
+      )}
+
+      {view.kind === 'month' && (
+        <MonthView
+          month={view.month}
+          minMonth={startOfMonth(firstUseDate)}
+          habits={habits}
+          logs={logs}
+          onMonthChange={(m) => setView({ kind: 'month', month: m })}
+          onBack={() => setView({ kind: 'list' })}
+          onDayPress={(dateKey) => setView({ kind: 'day', dateKey })}
+        />
+      )}
+
+      {view.kind === 'day' && (
+        <DayView
+          dateKey={view.dateKey}
+          minDateKey={minDateKey}
+          habits={habits}
+          logs={logs}
+          onDateChange={(dateKey) => setView({ kind: 'day', dateKey })}
+          onBack={() =>
+            setView({ kind: 'month', month: startOfMonth(fromKey(view.dateKey)) })
+          }
+          saveDayLog={saveDayLog}
+        />
+      )}
 
       <View style={styles.toolbar}>
         <Pressable style={styles.toolBtn} onPress={onToday}>
@@ -72,7 +100,6 @@ export default function RecordsScreen() {
           scheduleDailyLogs(habits.length - 1);
         }}
       />
-      <DailyLogSheet dateKey={dailyLogDate} onClose={() => setDailyLogDate(null)} />
     </View>
   );
 }
@@ -88,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 24,
     paddingVertical: 14,
-    backgroundColor: 'rgba(255,255,255,0.96)',
+    backgroundColor: 'rgba(0,0,0,0.92)',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: theme.colors.border,
   },

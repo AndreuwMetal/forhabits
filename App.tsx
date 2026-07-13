@@ -31,7 +31,7 @@ function Root() {
 
   return (
     <SafeAreaView style={styles.root}>
-      <StatusBar style={showIntro ? 'light' : 'dark'} />
+      <StatusBar style="light" />
       {showIntro ? (
         <IntroScreen onDone={() => setShowIntro(false)} />
       ) : (
