@@ -31,7 +31,6 @@ export default function HabitsLegendModal({
   onDelete,
 }: Props) {
   const [infoId, setInfoId] = useState<string | null>(null);
-  const [tableId, setTableId] = useState<string | null>(null);
 
   const confirmDelete = (h: Habit) => {
     if (Platform.OS === 'web') {
@@ -60,13 +59,10 @@ export default function HabitsLegendModal({
             {habits.map((h) => (
               <View key={h.id} style={styles.rowWrap}>
                 <View style={styles.row}>
-                  <Pressable
-                    style={styles.nameArea}
-                    onPress={() => setTableId(tableId === h.id ? null : h.id)}
-                  >
+                  <View style={styles.nameArea}>
                     <Text style={styles.emoji}>{h.emoji}</Text>
                     <Text style={styles.name}>{h.name}</Text>
-                  </Pressable>
+                  </View>
                   <Pressable
                     style={styles.infoBtn}
                     onPress={() => setInfoId(infoId === h.id ? null : h.id)}
@@ -92,10 +88,8 @@ export default function HabitsLegendModal({
                     {h.notes ? (
                       <Text style={styles.notes}>📝 {h.notes}</Text>
                     ) : null}
+                    <HabitMonthTable habit={h} logs={logs} minMonth={firstUse} />
                   </View>
-                )}
-                {tableId === h.id && (
-                  <HabitMonthTable habit={h} logs={logs} minMonth={firstUse} />
                 )}
               </View>
             ))}

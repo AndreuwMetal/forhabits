@@ -101,9 +101,7 @@ export default function HabitMonthTable({ habit, logs, minMonth }: Props) {
 
 const styles = StyleSheet.create({
   table: {
-    marginTop: 10,
-    marginLeft: 34,
-    marginRight: 4,
+    marginTop: 8,
     backgroundColor: theme.colors.surface,
     borderRadius: 14,
     borderWidth: 1,
