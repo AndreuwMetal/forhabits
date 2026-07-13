@@ -132,9 +132,18 @@ export default function DayView({
                   <Emoji size={26} dim={value !== true}>
                     {h.emoji}
                   </Emoji>
-                  <Text style={styles.name} numberOfLines={2}>
-                    {h.name}
-                  </Text>
+                  <View style={styles.nameCol}>
+                    <Text style={styles.name} numberOfLines={2}>
+                      {h.name}
+                    </Text>
+                    {(h.time || h.place) && (
+                      <Text style={styles.meta} numberOfLines={1}>
+                        {h.time ? `🕐 ${h.time}` : ''}
+                        {h.time && h.place ? '  ' : ''}
+                        {h.place ? `📍 ${h.place}` : ''}
+                      </Text>
+                    )}
+                  </View>
                   <View style={styles.segment}>
                     <Pressable
                       style={[
@@ -213,7 +222,9 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.border,
     flexWrap: 'wrap',
   },
-  name: { flex: 1, fontSize: 16, color: theme.colors.text, fontWeight: '500' },
+  nameCol: { flex: 1, gap: 2 },
+  name: { fontSize: 16, color: theme.colors.text, fontWeight: '500' },
+  meta: { fontSize: 12.5, color: theme.colors.subtext },
   segment: { flexDirection: 'row', gap: 6 },
   segBtn: {
     paddingHorizontal: 10,

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TextStyle } from 'react-native';
+import { theme } from '../theme';
 
 interface Props {
   text: string;
@@ -42,5 +43,5 @@ export default function Typewriter({ text, speed = 45, style, onDone }: Props) {
 }
 
 const styles = StyleSheet.create({
-  cursor: { color: '#F5F5F0' },
+  cursor: { color: theme.colors.today },
 });

@@ -37,7 +37,14 @@ function lastGrapheme(text: string): string {
 }
 
 interface Props {
-  onSave: (data: { name: string; emoji: string; periodicity: Periodicity }) => void;
+  onSave: (data: {
+    name: string;
+    emoji: string;
+    periodicity: Periodicity;
+    time?: string;
+    place?: string;
+    notes?: string;
+  }) => void;
 }
 
 export default function HabitForm({ onSave }: Props) {
@@ -48,6 +55,9 @@ export default function HabitForm({ onSave }: Props) {
   const [category, setCategory] = useState(0);
   const [daily, setDaily] = useState(true);
   const [days, setDays] = useState<number[]>([]);
+  const [time, setTime] = useState('');
+  const [place, setPlace] = useState('');
+  const [notes, setNotes] = useState('');
 
   const valid = name.trim().length > 0 && emoji !== '' && (daily || days.length > 0);
 
@@ -58,6 +68,9 @@ export default function HabitForm({ onSave }: Props) {
     setCategory(0);
     setDaily(true);
     setDays([]);
+    setTime('');
+    setPlace('');
+    setNotes('');
     setOpen(false);
   };
 
@@ -67,6 +80,9 @@ export default function HabitForm({ onSave }: Props) {
       name: name.trim(),
       emoji,
       periodicity: daily ? { type: 'daily' } : { type: 'weekdays', days },
+      time: time.trim() || undefined,
+      place: place.trim() || undefined,
+      notes: notes.trim() || undefined,
     });
     reset();
   };
@@ -149,6 +165,40 @@ export default function HabitForm({ onSave }: Props) {
           ))}
         </View>
       </ScrollView>
+
+      <View style={styles.optRow}>
+        <View style={styles.optCol}>
+          <Text style={styles.label}>Hora (opcional)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="07:30"
+            placeholderTextColor={theme.colors.subtext}
+            value={time}
+            onChangeText={setTime}
+          />
+        </View>
+        <View style={styles.optColWide}>
+          <Text style={styles.label}>Lugar (opcional)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ej: el parque, la cocina…"
+            placeholderTextColor={theme.colors.subtext}
+            value={place}
+            onChangeText={setPlace}
+          />
+        </View>
+      </View>
+
+      <Text style={styles.label}>Anotaciones</Text>
+      <TextInput
+        style={[styles.input, styles.notesInput]}
+        placeholder="Escribe lo que quieras: motivos, recordatorios, ideas…"
+        placeholderTextColor={theme.colors.subtext}
+        value={notes}
+        onChangeText={setNotes}
+        multiline
+        numberOfLines={3}
+      />
 
       <Text style={styles.label}>Periodicidad</Text>
       <View style={styles.periodRow}>
@@ -294,6 +344,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#3A3A5C',
   },
   emoji: { fontSize: 20 },
+  optRow: { flexDirection: 'row', gap: 10 },
+  optCol: { width: 110 },
+  optColWide: { flex: 1 },
+  notesInput: { minHeight: 72, textAlignVertical: 'top' },
   periodRow: { flexDirection: 'row', gap: 8 },
   chip: {
     paddingHorizontal: 14,

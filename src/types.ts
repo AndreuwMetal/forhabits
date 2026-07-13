@@ -8,6 +8,12 @@ export interface Habit {
   emoji: string;
   periodicity: Periodicity;
   createdAt: string; // ISO
+  /** hora preferida opcional, ej. "07:30" */
+  time?: string;
+  /** lugar preferido opcional, ej. "el parque" */
+  place?: string;
+  /** anotaciones libres del usuario */
+  notes?: string;
 }
 
 /** Registro de un día: habitId -> completado o no */

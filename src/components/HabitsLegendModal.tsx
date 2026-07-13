@@ -67,9 +67,21 @@ export default function HabitsLegendModal({
                   </Pressable>
                 </View>
                 {infoId === h.id && (
-                  <Text style={styles.periodicity}>
-                    Periodicidad estipulada: {periodicityLabel(h.periodicity)}
-                  </Text>
+                  <View style={styles.infoBox}>
+                    <Text style={styles.periodicity}>
+                      Periodicidad estipulada: {periodicityLabel(h.periodicity)}
+                    </Text>
+                    {(h.time || h.place) && (
+                      <Text style={styles.periodicity}>
+                        {h.time ? `🕐 ${h.time}` : ''}
+                        {h.time && h.place ? '  ·  ' : ''}
+                        {h.place ? `📍 ${h.place}` : ''}
+                      </Text>
+                    )}
+                    {h.notes ? (
+                      <Text style={styles.notes}>📝 {h.notes}</Text>
+                    ) : null}
+                  </View>
                 )}
               </View>
             ))}
@@ -128,11 +140,16 @@ const styles = StyleSheet.create({
   },
   deleteBtn: { padding: 4 },
   deleteText: { fontSize: 16 },
+  infoBox: { marginTop: 6, marginLeft: 34, gap: 4 },
   periodicity: {
-    marginTop: 6,
-    marginLeft: 34,
     color: theme.colors.subtext,
     fontSize: 14,
+  },
+  notes: {
+    color: theme.colors.subtext,
+    fontSize: 13.5,
+    fontStyle: 'italic',
+    lineHeight: 19,
   },
   closeBtn: {
     marginTop: 14,

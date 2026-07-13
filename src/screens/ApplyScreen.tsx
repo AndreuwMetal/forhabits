@@ -33,9 +33,18 @@ export default function ApplyScreen() {
   const consult = (name: string) => {
     const habit = name.trim();
     if (!habit) return;
+    // si el hábito está registrado, personaliza [HORA] y [LUGAR]
+    const registered = habits.find(
+      (h) => h.name.trim().toLowerCase() === habit.toLowerCase()
+    );
     setQuery(habit);
     setAdviceFor(habit);
-    setAdvice(buildAdvice(habit, mode));
+    setAdvice(
+      buildAdvice(habit, mode, {
+        time: registered?.time,
+        place: registered?.place,
+      })
+    );
     setOpenLaw(null);
   };
 
@@ -157,7 +166,7 @@ export default function ApplyScreen() {
                   {open && (
                     <View style={styles.strategies}>
                       <Text style={styles.lawSummaryOpen}>{law.summary}</Text>
-                      {items.map(({ strategy, applied }) => (
+                      {items.map(({ strategy, applied, example }) => (
                         <View key={strategy.id} style={styles.strategy}>
                           <Text style={[styles.strategyTitle, { color }]}>
                             {strategy.title}
@@ -166,7 +175,10 @@ export default function ApplyScreen() {
                           <View style={[styles.appliedBox, { borderColor: color }]}>
                             <Text style={styles.appliedText}>{applied}</Text>
                           </View>
-                          <Text style={styles.exampleText}>💡 {strategy.example}</Text>
+                          <View style={styles.exampleRow}>
+                            <Text style={styles.bulb}>💡</Text>
+                            <Text style={styles.exampleText}>{example}</Text>
+                          </View>
                         </View>
                       ))}
                     </View>
@@ -276,7 +288,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.card,
   },
   appliedText: { fontSize: 14, color: theme.colors.text, fontStyle: 'italic' },
-  exampleText: { fontSize: 12.5, color: theme.colors.subtext, lineHeight: 18 },
+  exampleRow: { flexDirection: 'row', gap: 6, alignItems: 'flex-start' },
+  bulb: { fontSize: 13, marginTop: 1 },
+  exampleText: {
+    flex: 1,
+    fontSize: 13,
+    color: theme.colors.subtext,
+    lineHeight: 19,
+  },
   quickList: { marginTop: 24, gap: 6 },
   quickTitle: {
     fontSize: 13,
