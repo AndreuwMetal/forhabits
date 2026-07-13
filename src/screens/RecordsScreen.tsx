@@ -98,6 +98,8 @@ export default function RecordsScreen() {
       <HabitsLegendModal
         visible={legendVisible}
         habits={habits}
+        logs={logs}
+        firstUse={startOfMonth(firstUseDate)}
         onClose={() => setLegendVisible(false)}
         onDelete={(id) => {
           removeHabit(id);

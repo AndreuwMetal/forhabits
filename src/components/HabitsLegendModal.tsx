@@ -9,12 +9,15 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Habit, periodicityLabel } from '../types';
+import { Habit, Logs, periodicityLabel } from '../types';
+import HabitMonthTable from './HabitMonthTable';
 import { theme } from '../theme';
 
 interface Props {
   visible: boolean;
   habits: Habit[];
+  logs: Logs;
+  firstUse: Date;
   onClose: () => void;
   onDelete: (id: string) => void;
 }
@@ -22,10 +25,13 @@ interface Props {
 export default function HabitsLegendModal({
   visible,
   habits,
+  logs,
+  firstUse,
   onClose,
   onDelete,
 }: Props) {
   const [infoId, setInfoId] = useState<string | null>(null);
+  const [tableId, setTableId] = useState<string | null>(null);
 
   const confirmDelete = (h: Habit) => {
     if (Platform.OS === 'web') {
@@ -54,8 +60,13 @@ export default function HabitsLegendModal({
             {habits.map((h) => (
               <View key={h.id} style={styles.rowWrap}>
                 <View style={styles.row}>
-                  <Text style={styles.emoji}>{h.emoji}</Text>
-                  <Text style={styles.name}>{h.name}</Text>
+                  <Pressable
+                    style={styles.nameArea}
+                    onPress={() => setTableId(tableId === h.id ? null : h.id)}
+                  >
+                    <Text style={styles.emoji}>{h.emoji}</Text>
+                    <Text style={styles.name}>{h.name}</Text>
+                  </Pressable>
                   <Pressable
                     style={styles.infoBtn}
                     onPress={() => setInfoId(infoId === h.id ? null : h.id)}
@@ -82,6 +93,9 @@ export default function HabitsLegendModal({
                       <Text style={styles.notes}>📝 {h.notes}</Text>
                     ) : null}
                   </View>
+                )}
+                {tableId === h.id && (
+                  <HabitMonthTable habit={h} logs={logs} minMonth={firstUse} />
                 )}
               </View>
             ))}
@@ -121,6 +135,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  nameArea: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   emoji: { fontSize: 22 },
   name: { flex: 1, fontSize: 16, color: theme.colors.text, fontWeight: '500' },
   infoBtn: {

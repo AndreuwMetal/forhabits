@@ -6,10 +6,17 @@ interface Props {
   text: string;
   speed?: number; // ms por carácter
   style?: TextStyle | TextStyle[];
+  cursorColor?: string;
   onDone?: () => void;
 }
 
-export default function Typewriter({ text, speed = 45, style, onDone }: Props) {
+export default function Typewriter({
+  text,
+  speed = 45,
+  style,
+  cursorColor,
+  onDone,
+}: Props) {
   const [count, setCount] = useState(0);
   const cursorOpacity = useRef(new Animated.Value(1)).current;
   const done = count >= text.length;
@@ -37,7 +44,11 @@ export default function Typewriter({ text, speed = 45, style, onDone }: Props) {
   return (
     <Text style={style}>
       {text.slice(0, count)}
-      <Animated.Text style={[styles.cursor, { opacity: cursorOpacity }]}>▌</Animated.Text>
+      <Animated.Text
+        style={[styles.cursor, cursorColor ? { color: cursorColor } : null, { opacity: cursorOpacity }]}
+      >
+        ▌
+      </Animated.Text>
     </Text>
   );
 }
