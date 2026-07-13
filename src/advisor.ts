@@ -1,4 +1,6 @@
 import { INVERSE_LAWS, LAWS, Law, Strategy } from './knowledge';
+import { INVERSE_LAWS as INVERSE_LAWS_EN, LAWS as LAWS_EN } from './knowledge.en';
+import { Lang } from './i18n';
 
 export type AdviceMode = 'build' | 'break';
 
@@ -28,18 +30,27 @@ function normalizeHabit(raw: string): string {
 
 function fill(template: string, habit: string, ctx: HabitContext): string {
   let out = template.split('{habit}').join(habit);
-  if (ctx.time) out = out.split('[HORA]').join(ctx.time);
-  if (ctx.place) out = out.split('[LUGAR]').join(ctx.place);
+  if (ctx.time) out = out.split('[HORA]').join(ctx.time).split('[TIME]').join(ctx.time);
+  if (ctx.place)
+    out = out.split('[LUGAR]').join(ctx.place).split('[PLACE]').join(ctx.place);
   return out;
 }
 
 export function buildAdvice(
   habitName: string,
   mode: AdviceMode,
-  ctx: HabitContext = {}
+  ctx: HabitContext = {},
+  lang: Lang = 'es'
 ): LawAdvice[] {
   const habit = normalizeHabit(habitName);
-  const laws = mode === 'build' ? LAWS : INVERSE_LAWS;
+  const laws =
+    lang === 'en'
+      ? mode === 'build'
+        ? LAWS_EN
+        : INVERSE_LAWS_EN
+      : mode === 'build'
+        ? LAWS
+        : INVERSE_LAWS;
   return laws.map((law) => ({
     law,
     items: law.strategies.map((strategy) => ({

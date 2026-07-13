@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { DayLog, formatDateEs, fromKey, isDueOn } from '../types';
 import { useStore } from '../store';
+import { useI18n } from '../i18n';
 import { theme } from '../theme';
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function DailyLogSheet({ dateKey, onClose }: Props) {
+  const { t } = useI18n();
   const { habits, logs, saveDayLog } = useStore();
   const [draft, setDraft] = useState<DayLog>({});
 
@@ -45,9 +47,7 @@ export default function DailyLogSheet({ dateKey, onClose }: Props) {
         <View style={styles.handle} />
         <Text style={styles.title}>DailyLog | {formatDateEs(date)}</Text>
         {due.length === 0 ? (
-          <Text style={styles.empty}>
-            No hay hábitos programados para este día.
-          </Text>
+          <Text style={styles.empty}>{t('noHabitsThisDay')}</Text>
         ) : (
           <ScrollView style={styles.list}>
             {due.map((h) => {
@@ -66,7 +66,7 @@ export default function DailyLogSheet({ dateKey, onClose }: Props) {
                       <Text
                         style={[styles.segText, value === true && styles.segTextOn]}
                       >
-                        Completed
+                        {t('completed')}
                       </Text>
                     </Pressable>
                     <Pressable
@@ -76,7 +76,7 @@ export default function DailyLogSheet({ dateKey, onClose }: Props) {
                       <Text
                         style={[styles.segText, value === false && styles.segTextOn]}
                       >
-                        Not completed
+                        {t('notCompleted')}
                       </Text>
                     </Pressable>
                   </View>
@@ -87,11 +87,11 @@ export default function DailyLogSheet({ dateKey, onClose }: Props) {
         )}
         <View style={styles.actions}>
           <Pressable style={styles.cancelBtn} onPress={onClose}>
-            <Text style={styles.cancelText}>Cancelar</Text>
+            <Text style={styles.cancelText}>{t('cancel')}</Text>
           </Pressable>
           {due.length > 0 && (
             <Pressable style={styles.saveBtn} onPress={save}>
-              <Text style={styles.saveText}>Guardar</Text>
+              <Text style={styles.saveText}>{t('save')}</Text>
             </Pressable>
           )}
         </View>

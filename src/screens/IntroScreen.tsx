@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Typewriter from '../components/Typewriter';
+import { useI18n } from '../i18n';
 
 const QUOTE =
   'What is not defined cannot be measured. What is not measured cannot be improved. What is not improved always degrades.';
@@ -17,6 +18,7 @@ const { width } = Dimensions.get('window');
 const SERIF = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
 
 export default function IntroScreen({ onDone }: { onDone: () => void }) {
+  const { t } = useI18n();
   const [typed, setTyped] = useState(false);
   const translateX = useRef(new Animated.Value(0)).current;
   const authorOpacity = useRef(new Animated.Value(0)).current;
@@ -71,7 +73,7 @@ export default function IntroScreen({ onDone }: { onDone: () => void }) {
           {AUTHOR}
         </Animated.Text>
         <Animated.Text style={[styles.hint, { opacity: hintOpacity }]}>
-          desliza para empezar
+          {t('introHint')}
         </Animated.Text>
       </Pressable>
     </Animated.View>

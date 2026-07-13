@@ -12,10 +12,12 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { buildAdvice, AdviceMode, LawAdvice } from '../advisor';
 import { useStore } from '../store';
+import { useI18n } from '../i18n';
 import { theme } from '../theme';
 
 export default function ApplyScreen() {
   const { habits } = useStore();
+  const { lang, t } = useI18n();
   const [query, setQuery] = useState('');
   const [mode, setMode] = useState<AdviceMode>('build');
   const [advice, setAdvice] = useState<LawAdvice[] | null>(null);
@@ -40,10 +42,12 @@ export default function ApplyScreen() {
     setQuery(habit);
     setAdviceFor(habit);
     setAdvice(
-      buildAdvice(habit, mode, {
-        time: registered?.time,
-        place: registered?.place,
-      })
+      buildAdvice(
+        habit,
+        mode,
+        { time: registered?.time, place: registered?.place },
+        lang
+      )
     );
     setOpenLaw(null);
   };
@@ -58,12 +62,8 @@ export default function ApplyScreen() {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.heading}>
-          ¿Qué hábito quieres trabajar?
-        </Text>
-        <Text style={styles.subheading}>
-          Te asesoro con las 4 leyes de Hábitos Atómicos de James Clear.
-        </Text>
+        <Text style={styles.heading}>{t('applyHeading')}</Text>
+        <Text style={styles.subheading}>{t('applySubtitle')}</Text>
 
         <View style={styles.modeRow}>
           <Pressable
@@ -74,7 +74,7 @@ export default function ApplyScreen() {
             }}
           >
             <Text style={[styles.modeText, mode === 'build' && styles.modeTextOn]}>
-              Adquirir hábito
+              {t('buildMode')}
             </Text>
           </Pressable>
           <Pressable
@@ -85,7 +85,7 @@ export default function ApplyScreen() {
             }}
           >
             <Text style={[styles.modeText, mode === 'break' && styles.modeTextOn]}>
-              Eliminar hábito
+              {t('breakMode')}
             </Text>
           </Pressable>
         </View>
@@ -93,7 +93,7 @@ export default function ApplyScreen() {
         <View style={styles.searchRow}>
           <TextInput
             style={styles.search}
-            placeholder="Ej: correr, leer, meditar…"
+            placeholder={t('searchPlaceholder')}
             placeholderTextColor={theme.colors.subtext}
             value={query}
             onChangeText={(t) => {
@@ -110,7 +110,7 @@ export default function ApplyScreen() {
               end={{ x: 1, y: 1 }}
               style={styles.goBtn}
             >
-              <Text style={styles.goText}>Asesorar</Text>
+              <Text style={styles.goText}>{t('advise')}</Text>
             </LinearGradient>
           </Pressable>
         </View>
@@ -134,7 +134,7 @@ export default function ApplyScreen() {
         {advice && (
           <View style={styles.results}>
             <Text style={styles.resultsTitle}>
-              {mode === 'build' ? 'Para adquirir' : 'Para eliminar'} “{adviceFor}”
+              {mode === 'build' ? t('toBuild') : t('toBreak')} “{adviceFor}”
             </Text>
             {advice.map(({ law, items }) => {
               const color = theme.lawColors[law.id] ?? theme.colors.primary;
@@ -191,7 +191,7 @@ export default function ApplyScreen() {
 
         {!advice && habits.length > 0 && query.trim() === '' && (
           <View style={styles.quickList}>
-            <Text style={styles.quickTitle}>Tus hábitos registrados</Text>
+            <Text style={styles.quickTitle}>{t('registeredHabits')}</Text>
             {habits.map((h) => (
               <Pressable
                 key={h.id}

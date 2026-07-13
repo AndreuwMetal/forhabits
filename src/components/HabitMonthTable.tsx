@@ -3,16 +3,14 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import {
   Habit,
   Logs,
-  MONTHS_ES,
   addMonths,
   isDueOn,
   monthDiff,
   startOfMonth,
   toKey,
 } from '../types';
+import { MONTHS, WEEKDAY_LETTERS, useI18n } from '../i18n';
 import { theme } from '../theme';
-
-const WEEKDAYS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
 interface Props {
   habit: Habit;
@@ -26,6 +24,7 @@ interface Props {
  * días en que el hábito se registró como completado.
  */
 export default function HabitMonthTable({ habit, logs, minMonth }: Props) {
+  const { lang } = useI18n();
   const [month, setMonth] = useState(startOfMonth(new Date()));
   const todayKey = toKey(new Date());
 
@@ -53,7 +52,7 @@ export default function HabitMonthTable({ habit, logs, minMonth }: Props) {
           <Text style={styles.navText}>‹</Text>
         </Pressable>
         <Text style={styles.monthTitle}>
-          {MONTHS_ES[month.getMonth()]} {month.getFullYear()}
+          {MONTHS[lang][month.getMonth()]} {month.getFullYear()}
         </Text>
         <Pressable
           style={[styles.navBtn, !canNext && styles.navDisabled]}
@@ -63,7 +62,7 @@ export default function HabitMonthTable({ habit, logs, minMonth }: Props) {
         </Pressable>
       </View>
       <View style={styles.weekRow}>
-        {WEEKDAYS.map((w, i) => (
+        {WEEKDAY_LETTERS[lang].map((w, i) => (
           <Text key={i} style={styles.weekday}>
             {w}
           </Text>

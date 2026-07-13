@@ -9,8 +9,9 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Habit, Logs, periodicityLabel } from '../types';
+import { Habit, Logs } from '../types';
 import HabitMonthTable from './HabitMonthTable';
+import { periodicityLabel, useI18n } from '../i18n';
 import { theme } from '../theme';
 
 interface Props {
@@ -30,6 +31,7 @@ export default function HabitsLegendModal({
   onClose,
   onDelete,
 }: Props) {
+  const { lang, t } = useI18n();
   const [infoId, setInfoId] = useState<string | null>(null);
 
   const confirmDelete = (h: Habit) => {
@@ -37,9 +39,9 @@ export default function HabitsLegendModal({
       onDelete(h.id);
       return;
     }
-    Alert.alert('Eliminar hábito', `¿Eliminar "${h.name}"?`, [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Eliminar', style: 'destructive', onPress: () => onDelete(h.id) },
+    Alert.alert(t('deleteHabit'), t('deleteConfirm').replace('{name}', h.name), [
+      { text: t('cancel'), style: 'cancel' },
+      { text: t('delete'), style: 'destructive', onPress: () => onDelete(h.id) },
     ]);
   };
 
@@ -48,12 +50,9 @@ export default function HabitsLegendModal({
       <Pressable style={styles.backdrop} onPress={onClose} />
       <View style={styles.sheet}>
         <View style={styles.handle} />
-        <Text style={styles.title}>Habits</Text>
+        <Text style={styles.title}>{t('habits')}</Text>
         {habits.length === 0 ? (
-          <Text style={styles.empty}>
-            Aún no tienes hábitos registrados. Crea el primero con “Develop a new
-            habit”.
-          </Text>
+          <Text style={styles.empty}>{t('habitsEmpty')}</Text>
         ) : (
           <ScrollView style={styles.list}>
             {habits.map((h) => (
@@ -76,7 +75,7 @@ export default function HabitsLegendModal({
                 {infoId === h.id && (
                   <View style={styles.infoBox}>
                     <Text style={styles.periodicity}>
-                      Periodicidad estipulada: {periodicityLabel(h.periodicity)}
+                      {t('stipulatedPeriodicity')}: {periodicityLabel(h.periodicity, lang)}
                     </Text>
                     {(h.time || h.place) && (
                       <Text style={styles.periodicity}>
@@ -96,7 +95,7 @@ export default function HabitsLegendModal({
           </ScrollView>
         )}
         <Pressable style={styles.closeBtn} onPress={onClose}>
-          <Text style={styles.closeText}>Cerrar</Text>
+          <Text style={styles.closeText}>{t('close')}</Text>
         </Pressable>
       </View>
     </Modal>

@@ -12,16 +12,14 @@ import Emoji from '../components/Emoji';
 import {
   Habit,
   Logs,
-  MONTHS_ES,
   addMonths,
   isDueOn,
   monthDiff,
   startOfMonth,
   toKey,
 } from '../types';
+import { MONTHS, WEEKDAY_LETTERS, useI18n } from '../i18n';
 import { theme } from '../theme';
-
-const WEEKDAYS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const { width: SCREEN_W } = Dimensions.get('window');
 const SWIPE_THRESHOLD = 60;
 
@@ -44,6 +42,7 @@ export default function MonthView({
   onBack,
   onDayPress,
 }: Props) {
+  const { lang, t } = useI18n();
   const translateX = useRef(new Animated.Value(0)).current;
   const [animating, setAnimating] = useState(false);
   const todayKey = toKey(new Date());
@@ -110,16 +109,16 @@ export default function MonthView({
       <View style={styles.header}>
         <Pressable style={styles.backBtn} onPress={onBack} disabled={animating}>
           <Text style={styles.backChevron}>‹</Text>
-          <Text style={styles.backText}>Records</Text>
+          <Text style={styles.backText}>{t('tabRecords')}</Text>
         </Pressable>
       </View>
       <Animated.View style={[styles.animPane, { transform: [{ translateX }] }]}>
         <Text style={styles.monthTitle}>
-          {MONTHS_ES[month.getMonth()]}{' '}
+          {MONTHS[lang][month.getMonth()]}{' '}
           <Text style={styles.yearText}>{month.getFullYear()}</Text>
         </Text>
         <View style={styles.weekdayRow}>
-          {WEEKDAYS.map((w, i) => (
+          {WEEKDAY_LETTERS[lang].map((w, i) => (
             <Text key={i} style={[styles.weekday, i >= 5 && styles.weekendDay]}>
               {w}
             </Text>

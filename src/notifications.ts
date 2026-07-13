@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { formatDateEs, toKey } from './types';
+import { Lang, getString } from './i18n';
 
 const DAILYLOG_HOUR = 21;
 
@@ -25,7 +26,10 @@ export async function requestNotificationPermission(): Promise<boolean> {
  * Programa el DailyLog de los próximos 7 días con la fecha exacta en el
  * título ("DailyLog | dd/mm/aaaa"). Se reprograma en cada apertura de la app.
  */
-export async function scheduleDailyLogs(habitCount: number): Promise<void> {
+export async function scheduleDailyLogs(
+  habitCount: number,
+  lang: Lang = 'es'
+): Promise<void> {
   if (Platform.OS === 'web') return;
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
@@ -40,7 +44,7 @@ export async function scheduleDailyLogs(habitCount: number): Promise<void> {
       await Notifications.scheduleNotificationAsync({
         content: {
           title: `DailyLog | ${formatDateEs(date)}`,
-          body: '¿Qué hábitos has completado hoy? Toca para registrarlos.',
+          body: getString(lang, 'notifBody'),
           data: { dateKey: toKey(date) },
         },
         trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date },

@@ -14,13 +14,12 @@ import {
   DayLog,
   Habit,
   Logs,
-  MONTHS_ES,
   addDays,
-  formatDayTitleEs,
   fromKey,
   isDueOn,
   toKey,
 } from '../types';
+import { MONTHS, formatDayTitle, useI18n } from '../i18n';
 import { theme } from '../theme';
 
 const { width: SCREEN_W } = Dimensions.get('window');
@@ -45,6 +44,7 @@ export default function DayView({
   onBack,
   saveDayLog,
 }: Props) {
+  const { lang, t } = useI18n();
   const translateX = useRef(new Animated.Value(0)).current;
   const [animating, setAnimating] = useState(false);
 
@@ -107,22 +107,18 @@ export default function DayView({
         <Pressable style={styles.backBtn} onPress={onBack} disabled={animating}>
           <Text style={styles.backChevron}>‹</Text>
           <Text style={styles.backText}>
-            {MONTHS_ES[date.getMonth()].charAt(0).toUpperCase() +
-              MONTHS_ES[date.getMonth()].slice(1)}
+            {MONTHS[lang][date.getMonth()].charAt(0).toUpperCase() +
+              MONTHS[lang][date.getMonth()].slice(1)}
           </Text>
         </Pressable>
       </View>
       <Animated.View style={[styles.animPane, { transform: [{ translateX }] }]}>
         <Text style={[styles.dayTitle, dateKey === todayKey && styles.todayTitle]}>
-          {formatDayTitleEs(date)}
+          {formatDayTitle(date, lang)}
         </Text>
-        {isFuture && (
-          <Text style={styles.futureHint}>
-            Día futuro: aún no se puede registrar.
-          </Text>
-        )}
+        {isFuture && <Text style={styles.futureHint}>{t('futureDay')}</Text>}
         {due.length === 0 ? (
-          <Text style={styles.empty}>No hay hábitos programados para este día.</Text>
+          <Text style={styles.empty}>{t('noHabitsThisDay')}</Text>
         ) : (
           <ScrollView style={styles.list} contentContainerStyle={styles.listContent}>
             {due.map((h) => {
@@ -154,7 +150,7 @@ export default function DayView({
                       onPress={() => setValue(h.id, true)}
                     >
                       <Text style={[styles.segText, value === true && styles.segTextOn]}>
-                        Completed
+                        {t('completed')}
                       </Text>
                     </Pressable>
                     <Pressable
@@ -168,7 +164,7 @@ export default function DayView({
                       <Text
                         style={[styles.segText, value === false && styles.segTextOn]}
                       >
-                        Not completed
+                        {t('notCompleted')}
                       </Text>
                     </Pressable>
                   </View>
@@ -177,7 +173,7 @@ export default function DayView({
             })}
           </ScrollView>
         )}
-        <Text style={styles.swipeHint}>← desliza para cambiar de día →</Text>
+        <Text style={styles.swipeHint}>{t('swipeChangeDay')}</Text>
       </Animated.View>
     </View>
   );

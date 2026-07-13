@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import GlassCard from './GlassCard';
-import { Habit, Logs, formatDayTitleEs } from '../types';
+import { Habit, Logs } from '../types';
 import { currentStreak, todayProgress } from '../stats';
+import { formatDayTitle, useI18n } from '../i18n';
 import { theme } from '../theme';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 
 /** Panel superior con el progreso de hoy y la racha actual */
 export default function HeroCard({ habits, logs }: Props) {
+  const { lang, t } = useI18n();
   const { done, total } = todayProgress(habits, logs);
   const streak = currentStreak(habits, logs);
   const pct = total === 0 ? 0 : done / total;
@@ -26,7 +28,7 @@ export default function HeroCard({ habits, logs }: Props) {
         style={styles.inner}
       >
         <View style={styles.topRow}>
-          <Text style={styles.date}>{formatDayTitleEs(new Date())}</Text>
+          <Text style={styles.date}>{formatDayTitle(new Date(), lang)}</Text>
           <View style={styles.streakChip}>
             <Text style={styles.streakText}>🔥 {streak}</Text>
           </View>
@@ -38,10 +40,10 @@ export default function HeroCard({ habits, logs }: Props) {
           </Text>
           <Text style={styles.progressLabel}>
             {total === 0
-              ? 'crea tu primer hábito'
+              ? t('heroFirstHabit')
               : done === total
-                ? '¡día completado! 🎉'
-                : 'hábitos de hoy'}
+                ? t('heroDayComplete')
+                : t('heroTodayHabits')}
           </Text>
         </View>
         <View style={styles.barTrack}>

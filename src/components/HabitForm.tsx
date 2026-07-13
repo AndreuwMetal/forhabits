@@ -10,17 +10,11 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Periodicity } from '../types';
 import { EMOJI_CATEGORIES } from '../emojis';
+import { WEEKDAY_LETTERS, useI18n } from '../i18n';
 import { theme } from '../theme';
 
-const WEEKDAYS: { label: string; day: number }[] = [
-  { label: 'L', day: 1 },
-  { label: 'M', day: 2 },
-  { label: 'X', day: 3 },
-  { label: 'J', day: 4 },
-  { label: 'V', day: 5 },
-  { label: 'S', day: 6 },
-  { label: 'D', day: 0 },
-];
+// lunes primero, valores de getDay()
+const WEEKDAY_VALUES = [1, 2, 3, 4, 5, 6, 0];
 
 /** Extrae el último emoji (grafema) de un texto escrito con el teclado */
 function lastGrapheme(text: string): string {
@@ -48,6 +42,7 @@ interface Props {
 }
 
 export default function HabitForm({ onSave }: Props) {
+  const { lang, t } = useI18n();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [emoji, setEmoji] = useState<string>('');
@@ -96,32 +91,32 @@ export default function HabitForm({ onSave }: Props) {
     return (
       <Pressable style={styles.collapsed} onPress={() => setOpen(true)}>
         <Text style={styles.collapsedPlus}>＋</Text>
-        <Text style={styles.collapsedText}>Develop a new habit</Text>
+        <Text style={styles.collapsedText}>{t('newHabit')}</Text>
       </Pressable>
     );
   }
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Develop a new habit</Text>
+      <Text style={styles.title}>{t('newHabit')}</Text>
 
-      <Text style={styles.label}>Hábito</Text>
+      <Text style={styles.label}>{t('habitLabel')}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Ej: Correr 10 minutos"
+        placeholder={t('habitPlaceholder')}
         placeholderTextColor={theme.colors.subtext}
         value={name}
         onChangeText={setName}
       />
 
-      <Text style={styles.label}>Emoticono</Text>
+      <Text style={styles.label}>{t('emojiLabel')}</Text>
       <View style={styles.emojiPickRow}>
         <View style={styles.emojiPreview}>
           <Text style={styles.emojiPreviewText}>{emoji || '·'}</Text>
         </View>
         <TextInput
           style={[styles.input, styles.emojiInput]}
-          placeholder="Escribe cualquier emoji con tu teclado…"
+          placeholder={t('emojiPlaceholder')}
           placeholderTextColor={theme.colors.subtext}
           value={customEmoji}
           onChangeText={(t) => {
@@ -139,12 +134,12 @@ export default function HabitForm({ onSave }: Props) {
       >
         {EMOJI_CATEGORIES.map((c, i) => (
           <Pressable
-            key={c.name}
+            key={c.name.es}
             style={[styles.catChip, category === i && styles.catChipActive]}
             onPress={() => setCategory(i)}
           >
             <Text style={[styles.catText, category === i && styles.catTextActive]}>
-              {c.name}
+              {c.name[lang]}
             </Text>
           </Pressable>
         ))}
@@ -168,20 +163,20 @@ export default function HabitForm({ onSave }: Props) {
 
       <View style={styles.optRow}>
         <View style={styles.optCol}>
-          <Text style={styles.label}>Hora (opcional)</Text>
+          <Text style={styles.label}>{t('timeLabel')}</Text>
           <TextInput
             style={styles.input}
-            placeholder="07:30"
+            placeholder={t('timePlaceholder')}
             placeholderTextColor={theme.colors.subtext}
             value={time}
             onChangeText={setTime}
           />
         </View>
         <View style={styles.optColWide}>
-          <Text style={styles.label}>Lugar (opcional)</Text>
+          <Text style={styles.label}>{t('placeLabel')}</Text>
           <TextInput
             style={styles.input}
-            placeholder="Ej: el parque, la cocina…"
+            placeholder={t('placePlaceholder')}
             placeholderTextColor={theme.colors.subtext}
             value={place}
             onChangeText={setPlace}
@@ -189,10 +184,10 @@ export default function HabitForm({ onSave }: Props) {
         </View>
       </View>
 
-      <Text style={styles.label}>Anotaciones</Text>
+      <Text style={styles.label}>{t('notesLabel')}</Text>
       <TextInput
         style={[styles.input, styles.notesInput]}
-        placeholder="Escribe lo que quieras: motivos, recordatorios, ideas…"
+        placeholder={t('notesPlaceholder')}
         placeholderTextColor={theme.colors.subtext}
         value={notes}
         onChangeText={setNotes}
@@ -200,14 +195,14 @@ export default function HabitForm({ onSave }: Props) {
         numberOfLines={3}
       />
 
-      <Text style={styles.label}>Periodicidad</Text>
+      <Text style={styles.label}>{t('periodicity')}</Text>
       <View style={styles.periodRow}>
         <Pressable
           style={[styles.chip, daily && styles.chipActive]}
           onPress={() => setDaily(true)}
         >
           <Text style={[styles.chipText, daily && styles.chipTextActive]}>
-            Todos los días
+            {t('everyDay')}
           </Text>
         </Pressable>
         <Pressable
@@ -215,13 +210,13 @@ export default function HabitForm({ onSave }: Props) {
           onPress={() => setDaily(false)}
         >
           <Text style={[styles.chipText, !daily && styles.chipTextActive]}>
-            Días concretos
+            {t('specificDays')}
           </Text>
         </Pressable>
       </View>
       {!daily && (
         <View style={styles.daysRow}>
-          {WEEKDAYS.map(({ label, day }) => (
+          {WEEKDAY_VALUES.map((day, i) => (
             <Pressable
               key={day}
               style={[styles.dayChip, days.includes(day) && styles.chipActive]}
@@ -233,7 +228,7 @@ export default function HabitForm({ onSave }: Props) {
                   days.includes(day) && styles.chipTextActive,
                 ]}
               >
-                {label}
+                {WEEKDAY_LETTERS[lang][i]}
               </Text>
             </Pressable>
           ))}
@@ -242,7 +237,7 @@ export default function HabitForm({ onSave }: Props) {
 
       <View style={styles.actions}>
         <Pressable style={styles.cancelBtn} onPress={reset}>
-          <Text style={styles.cancelText}>Cancelar</Text>
+          <Text style={styles.cancelText}>{t('cancel')}</Text>
         </Pressable>
         <Pressable
           style={[styles.saveWrap, !valid && styles.saveDisabled]}
@@ -255,7 +250,7 @@ export default function HabitForm({ onSave }: Props) {
             end={{ x: 1, y: 1 }}
             style={styles.saveBtn}
           >
-            <Text style={styles.saveText}>Guardar hábito</Text>
+            <Text style={styles.saveText}>{t('saveHabit')}</Text>
           </LinearGradient>
         </Pressable>
       </View>

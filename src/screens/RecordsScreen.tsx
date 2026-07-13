@@ -8,6 +8,7 @@ import MonthView from './MonthView';
 import DayView from './DayView';
 import { useStore } from '../store';
 import { scheduleDailyLogs } from '../notifications';
+import { useI18n } from '../i18n';
 import { theme } from '../theme';
 import { fromKey, startOfMonth, toKey } from '../types';
 
@@ -18,6 +19,7 @@ type ViewState =
 
 export default function RecordsScreen() {
   const { habits, logs, firstUse, addHabit, removeHabit, saveDayLog } = useStore();
+  const { lang, t } = useI18n();
   const calRef = useRef<MonthCalendarRef>(null);
   const [legendVisible, setLegendVisible] = useState(false);
   const [view, setView] = useState<ViewState>({ kind: 'list' });
@@ -50,7 +52,7 @@ export default function RecordsScreen() {
               <HabitForm
                 onSave={(data) => {
                   addHabit(data);
-                  scheduleDailyLogs(habits.length + 1);
+                  scheduleDailyLogs(habits.length + 1, lang);
                 }}
               />
             </View>
@@ -87,11 +89,11 @@ export default function RecordsScreen() {
       {/* Dock flotante */}
       <View style={styles.dock}>
         <Pressable style={styles.dockBtn} onPress={onToday}>
-          <Text style={styles.dockText}>Today</Text>
+          <Text style={styles.dockText}>{t('today')}</Text>
         </Pressable>
         <View style={styles.dockDivider} />
         <Pressable style={styles.dockBtn} onPress={() => setLegendVisible(true)}>
-          <Text style={styles.dockText}>Habits</Text>
+          <Text style={styles.dockText}>{t('habits')}</Text>
         </Pressable>
       </View>
 
@@ -103,7 +105,7 @@ export default function RecordsScreen() {
         onClose={() => setLegendVisible(false)}
         onDelete={(id) => {
           removeHabit(id);
-          scheduleDailyLogs(habits.length - 1);
+          scheduleDailyLogs(habits.length - 1, lang);
         }}
       />
     </View>

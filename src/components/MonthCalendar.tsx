@@ -16,15 +16,14 @@ import Emoji from './Emoji';
 import {
   Habit,
   Logs,
-  MONTHS_ES,
   addMonths,
   monthDiff,
   startOfMonth,
   toKey,
 } from '../types';
+import { MONTHS, WEEKDAY_LETTERS, useI18n } from '../i18n';
 import { theme } from '../theme';
 
-const WEEKDAYS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const FUTURE_MONTHS = 3;
 const ROW_HEIGHT = 58;
 const TITLE_HEIGHT = 44;
@@ -54,6 +53,7 @@ const MonthCalendar = forwardRef<MonthCalendarRef, Props>(function MonthCalendar
   { habits, logs, firstUse, onDayPress, onMonthTitlePress, ListHeaderComponent },
   ref
 ) {
+  const { lang } = useI18n();
   const listRef = useRef<FlatList<MonthData>>(null);
   const todayKey = toKey(new Date());
 
@@ -100,12 +100,12 @@ const MonthCalendar = forwardRef<MonthCalendarRef, Props>(function MonthCalendar
             }
           >
             <Text style={styles.monthTitle}>
-              {MONTHS_ES[item.month]}{' '}
+              {MONTHS[lang][item.month]}{' '}
               <Text style={styles.yearText}>{item.year}</Text>
             </Text>
           </Pressable>
           <View style={styles.weekdayRow}>
-            {WEEKDAYS.map((w, i) => (
+            {WEEKDAY_LETTERS[lang].map((w, i) => (
               <Text key={i} style={styles.weekday}>
                 {w}
               </Text>
@@ -145,7 +145,7 @@ const MonthCalendar = forwardRef<MonthCalendarRef, Props>(function MonthCalendar
         </View>
       );
     },
-    [logs, emojiById, todayKey, onDayPress, onMonthTitlePress]
+    [logs, emojiById, todayKey, onDayPress, onMonthTitlePress, lang]
   );
 
   return (

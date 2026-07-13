@@ -1,18 +1,18 @@
 export interface EmojiCategory {
-  name: string;
+  name: { es: string; en: string };
   emojis: string[];
 }
 
 export const EMOJI_CATEGORIES: EmojiCategory[] = [
   {
-    name: 'Frecuentes',
+    name: { es: 'Frecuentes', en: 'Frequent' },
     emojis: [
       '🏃', '📚', '🧘', '💪', '💧', '🥗', '😴', '🦷', '✍️', '🎸', '🎨', '🧠',
       '💻', '🌅', '🚭', '💰', '🧹', '🙏', '🚴', '🏊', '📵', '🌱', '❤️', '⭐',
     ],
   },
   {
-    name: 'Deporte',
+    name: { es: 'Deporte', en: 'Sports' },
     emojis: [
       '⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🥅', '🏒',
       '🏑', '🥍', '🏏', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🛼', '⛸️',
@@ -21,7 +21,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     ],
   },
   {
-    name: 'Salud y cuerpo',
+    name: { es: 'Salud y cuerpo', en: 'Health & body' },
     emojis: [
       '🫀', '🫁', '🦴', '👀', '👂', '👃', '👄', '🦵', '🦶', '💊', '💉', '🩺',
       '🩹', '🧬', '🦠', '🧼', '🛁', '🚿', '🪥', '🧴', '💆', '💇', '🧖', '🛌',
@@ -29,7 +29,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     ],
   },
   {
-    name: 'Comida y bebida',
+    name: { es: 'Comida y bebida', en: 'Food & drink' },
     emojis: [
       '🍇', '🍈', '🍉', '🍊', '🍋', '🍌', '🍍', '🥭', '🍏', '🍐', '🍑', '🍒',
       '🍓', '🫐', '🥝', '🍅', '🫒', '🥥', '🥑', '🍆', '🥔', '🌽', '🌶️', '🫑',
@@ -39,7 +39,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     ],
   },
   {
-    name: 'Estudio y trabajo',
+    name: { es: 'Estudio y trabajo', en: 'Study & work' },
     emojis: [
       '📖', '📕', '📗', '📘', '📙', '📓', '📔', '📒', '📃', '📜', '📄', '📰',
       '🔖', '🏷️', '✏️', '🖊️', '🖋️', '🖍️', '📝', '💼', '📁', '📂', '📅', '📆',
@@ -48,7 +48,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     ],
   },
   {
-    name: 'Hogar y rutina',
+    name: { es: 'Hogar y rutina', en: 'Home & routine' },
     emojis: [
       '🏠', '🏡', '🛋️', '🛏️', '🪑', '🚪', '🪟', '🧺', '🧻', '🪣', '🧽', '🪠',
       '🧯', '🛒', '🍽️', '🍴', '🥄', '🔪', '🫙', '🗑️', '♻️', '🪴', '🌻', '🐕',
@@ -56,7 +56,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     ],
   },
   {
-    name: 'Mente y bienestar',
+    name: { es: 'Mente y bienestar', en: 'Mind & wellbeing' },
     emojis: [
       '😀', '😊', '😌', '😎', '🥰', '🤗', '🤔', '😤', '😭', '😱', '🥳', '😇',
       '🧘‍♀️', '🧘‍♂️', '💤', '🛀', '☮️', '🕉️', '📿', '⛪', '🕌', '✝️', '☪️', '🔮',
@@ -65,7 +65,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     ],
   },
   {
-    name: 'Naturaleza y viajes',
+    name: { es: 'Naturaleza y viajes', en: 'Nature & travel' },
     emojis: [
       '🌍', '🌎', '🌏', '🗺️', '🧭', '⛰️', '🏔️', '🌋', '🏕️', '🏖️', '🏜️', '🏝️',
       '🌲', '🌳', '🌴', '🌵', '🌾', '🌿', '☘️', '🍀', '🍁', '🍂', '🍃', '🌸',
@@ -75,7 +75,7 @@ export const EMOJI_CATEGORIES: EmojiCategory[] = [
     ],
   },
   {
-    name: 'Símbolos',
+    name: { es: 'Símbolos', en: 'Symbols' },
     emojis: [
       '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕',
       '💯', '✅', '☑️', '✔️', '❌', '⭕', '❗', '❓', '💤', '🔆', '🔅', '➕',
