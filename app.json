@@ -1,25 +1,52 @@
 {
   "expo": {
-    "name": "forhabits",
+    "name": "ForHabits",
     "slug": "forhabits",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#07030F",
+    "scheme": "forhabits",
+    "primaryColor": "#B026FF",
+    "description": "Aplica las 4 leyes de Hábitos Atómicos para construir hábitos buenos y eliminar los malos.",
+    "githubUrl": "https://github.com/AndreuwMetal/forhabits",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.andreuwmetal.forhabits",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"],
+        "NSUserNotificationsUsageDescription": "ForHabits te avisa cada día para registrar tus hábitos y te envía tu análisis semanal."
+      }
     },
     "android": {
+      "package": "com.andreuwmetal.forhabits",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#07030F",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["RECEIVE_BOOT_COMPLETED", "SCHEDULE_EXACT_ALARM"]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#B026FF"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "REEMPLAZAR_TRAS_EAS_INIT"
+      }
     }
   }
 }
