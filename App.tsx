@@ -4,6 +4,7 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import IntroScreen from './src/screens/IntroScreen';
 import MainScreen from './src/screens/MainScreen';
 import DailyLogSheet from './src/components/DailyLogSheet';
+import AnalysisSheet, { AnalysisRequest } from './src/components/AnalysisSheet';
 import { StoreProvider, useStore } from './src/store';
 import { LanguageProvider, useI18n } from './src/i18n';
 import { onDailyLogResponse, scheduleDailyLogs } from './src/notifications';
@@ -14,6 +15,7 @@ function Root() {
   const { lang } = useI18n();
   const [showIntro, setShowIntro] = useState(true);
   const [notificationDate, setNotificationDate] = useState<string | null>(null);
+  const [analysisReq, setAnalysisReq] = useState<AnalysisRequest | null>(null);
 
   // Reprograma los DailyLog al abrir la app o cambiar hábitos, hora o idioma
   useEffect(() => {
@@ -26,6 +28,9 @@ function Root() {
     const sub = onDailyLogResponse((r) => {
       if (r.type === 'action') {
         saveDayLog(r.dateKey, { [r.habitId]: r.done });
+      } else if (r.type === 'analysis') {
+        setShowIntro(false);
+        setAnalysisReq({ mode: r.mode, sundayKey: r.dateKey });
       } else {
         setShowIntro(false);
         setNotificationDate(r.dateKey);
@@ -49,6 +54,9 @@ function Root() {
           dateKey={notificationDate}
           onClose={() => setNotificationDate(null)}
         />
+      )}
+      {!showIntro && (
+        <AnalysisSheet request={analysisReq} onClose={() => setAnalysisReq(null)} />
       )}
     </SafeAreaView>
   );

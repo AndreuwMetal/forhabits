@@ -3,6 +3,9 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import RecordsScreen from './RecordsScreen';
 import ApplyScreen from './ApplyScreen';
+import NotificationsFeedSheet from '../components/NotificationsFeedSheet';
+import AnalysisSheet, { AnalysisRequest } from '../components/AnalysisSheet';
+import DailyLogSheet from '../components/DailyLogSheet';
 import { LANGUAGES, useI18n } from '../i18n';
 import { theme } from '../theme';
 
@@ -11,6 +14,9 @@ type Tab = 'records' | 'apply';
 export default function MainScreen() {
   const [tab, setTab] = useState<Tab>('records');
   const [langMenu, setLangMenu] = useState(false);
+  const [bellVisible, setBellVisible] = useState(false);
+  const [feedDaily, setFeedDaily] = useState<string | null>(null);
+  const [feedAnalysis, setFeedAnalysis] = useState<AnalysisRequest | null>(null);
   const { lang, setLang, t } = useI18n();
 
   const tabLabel = (x: Tab) => (x === 'records' ? t('tabRecords') : t('tabApply'));
@@ -41,6 +47,9 @@ export default function MainScreen() {
               )
             )}
           </View>
+          <Pressable style={styles.bellChip} onPress={() => setBellVisible(true)}>
+            <Text style={styles.bellText}>🔔</Text>
+          </Pressable>
           <Pressable style={styles.langChip} onPress={() => setLangMenu(true)}>
             <Text style={styles.langChipText}>
               🌐 {LANGUAGES.find((l) => l.code === lang)?.short}
@@ -58,6 +67,15 @@ export default function MainScreen() {
           <ApplyScreen />
         </View>
       </View>
+
+      <NotificationsFeedSheet
+        visible={bellVisible}
+        onClose={() => setBellVisible(false)}
+        onOpenDaily={(dateKey) => setFeedDaily(dateKey)}
+        onOpenAnalysis={(mode, sundayKey) => setFeedAnalysis({ mode, sundayKey })}
+      />
+      <DailyLogSheet dateKey={feedDaily} onClose={() => setFeedDaily(null)} />
+      <AnalysisSheet request={feedAnalysis} onClose={() => setFeedAnalysis(null)} />
 
       <Modal
         visible={langMenu}
@@ -133,6 +151,15 @@ const styles = StyleSheet.create({
   },
   segText: { fontSize: 13.5, fontWeight: '700', color: theme.colors.subtext },
   segTextActive: { fontSize: 13.5, fontWeight: '800', color: '#fff' },
+  bellChip: {
+    paddingHorizontal: 9,
+    paddingVertical: 7,
+    borderRadius: 999,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  bellText: { fontSize: 14 },
   langChip: {
     paddingHorizontal: 10,
     paddingVertical: 8,

@@ -1,11 +1,12 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import { Habit, formatDateEs, isDueOn, toKey } from './types';
+import { Habit, addDays, formatDateEs, isDueOn, toKey } from './types';
+import { isLastSundayOfMonth } from './analysis';
 import { Lang, getString } from './i18n';
 
 const DEFAULT_TIME = '21:00';
 const CATEGORY = 'dailylog-habit';
-const MAX_SCHEDULED = 60; // iOS admite ~64 notificaciones programadas
+const MAX_SCHEDULED = 55; // iOS admite ~64; se reserva hueco para los análisis
 
 function parseTime(time: string): { hour: number; minute: number } {
   const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time.trim());
@@ -82,6 +83,45 @@ export async function scheduleDailyLogs(
         });
       }
     }
+
+    // Análisis semanal: próximos 2 domingos a las 21:30.
+    // Análisis mensual: si el domingo es el último del mes, a las 21:45.
+    let sundaysScheduled = 0;
+    let d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    for (let i = 0; i < 15 && sundaysScheduled < 2; i++) {
+      if (d.getDay() === 0) {
+        const weekly = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 21, 30);
+        if (weekly > now) {
+          sundaysScheduled++;
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: `📊 ${getString(lang, 'weeklyAnalysis')} | ${formatDateEs(weekly)}`,
+              body: getString(lang, 'weeklyNotifBody'),
+              data: { type: 'weekly', dateKey: toKey(weekly) },
+            },
+            trigger: {
+              type: Notifications.SchedulableTriggerInputTypes.DATE,
+              date: weekly,
+            },
+          });
+          if (isLastSundayOfMonth(d)) {
+            const monthly = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 21, 45);
+            await Notifications.scheduleNotificationAsync({
+              content: {
+                title: `📈 ${getString(lang, 'monthlyAnalysis')} | ${formatDateEs(monthly)}`,
+                body: getString(lang, 'monthlyNotifBody'),
+                data: { type: 'monthly', dateKey: toKey(monthly) },
+              },
+              trigger: {
+                type: Notifications.SchedulableTriggerInputTypes.DATE,
+                date: monthly,
+              },
+            });
+          }
+        }
+      }
+      d = addDays(d, 1);
+    }
   } catch (e) {
     console.warn('No se pudieron programar las notificaciones', e);
   }
@@ -89,16 +129,20 @@ export async function scheduleDailyLogs(
 
 export type DailyLogResponse =
   | { type: 'open'; dateKey: string }
-  | { type: 'action'; dateKey: string; habitId: string; done: boolean };
+  | { type: 'action'; dateKey: string; habitId: string; done: boolean }
+  | { type: 'analysis'; mode: 'weekly' | 'monthly'; dateKey: string };
 
 function parseResponse(
   response: Notifications.NotificationResponse
 ): DailyLogResponse | null {
   const data = response.notification.request.content.data as
-    | { dateKey?: unknown; habitId?: unknown }
+    | { dateKey?: unknown; habitId?: unknown; type?: unknown }
     | undefined;
   const dateKey = data?.dateKey;
   if (typeof dateKey !== 'string') return null;
+  if (data?.type === 'weekly' || data?.type === 'monthly') {
+    return { type: 'analysis', mode: data.type, dateKey };
+  }
   const action = response.actionIdentifier;
   if (action === 'completed' || action === 'not_completed') {
     const habitId = data?.habitId;

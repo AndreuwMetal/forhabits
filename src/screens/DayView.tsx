@@ -33,6 +33,8 @@ interface Props {
   onDateChange: (dateKey: string) => void;
   onBack: () => void;
   saveDayLog: (dateKey: string, log: DayLog) => void;
+  /** abre el análisis semanal guardado en este domingo */
+  onOpenAnalysis?: (sundayKey: string) => void;
 }
 
 export default function DayView({
@@ -43,6 +45,7 @@ export default function DayView({
   onDateChange,
   onBack,
   saveDayLog,
+  onOpenAnalysis,
 }: Props) {
   const { lang, t } = useI18n();
   const translateX = useRef(new Animated.Value(0)).current;
@@ -117,6 +120,14 @@ export default function DayView({
           {formatDayTitle(date, lang)}
         </Text>
         {isFuture && <Text style={styles.futureHint}>{t('futureDay')}</Text>}
+        {date.getDay() === 0 && !isFuture && onOpenAnalysis && (
+          <Pressable
+            style={styles.analysisBtn}
+            onPress={() => onOpenAnalysis(dateKey)}
+          >
+            <Text style={styles.analysisText}>📊 {t('weeklyAnalysis')}</Text>
+          </Pressable>
+        )}
         {due.length === 0 ? (
           <Text style={styles.empty}>{t('noHabitsThisDay')}</Text>
         ) : (
@@ -205,6 +216,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 4,
   },
+  analysisBtn: {
+    marginHorizontal: 16,
+    marginVertical: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    alignSelf: 'flex-start',
+  },
+  analysisText: { color: theme.colors.cyan, fontWeight: '700', fontSize: 14 },
   empty: { color: theme.colors.subtext, fontSize: 15, padding: 16 },
   list: { flex: 1 },
   listContent: { paddingBottom: 80 },

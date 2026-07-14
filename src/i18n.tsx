@@ -76,6 +76,18 @@ const es = {
   historyTitle: 'DailyLog',
   historyEmpty: 'Aún no hay días con hábitos programados.',
   notifBodyHabit: '¿Lo has completado hoy? Responde desde aquí.',
+  weeklyAnalysis: 'Análisis semanal',
+  monthlyAnalysis: 'Análisis mensual',
+  weeklyNotifBody: 'Tu semana en números: calificaciones, gráfica y mejora. Toca para verlo.',
+  monthlyNotifBody: 'Tu mes en números: calificaciones, gráfica y mejora. Toca para verlo.',
+  notificationsTitle: 'Notificaciones',
+  notifFeedEmpty: 'Todavía no has recibido notificaciones.',
+  gradesTitle: 'Calificaciones',
+  repetitions: 'Repeticiones',
+  improvement: 'Mejora general',
+  improvementGoal: 'Objetivo',
+  improvementExplain:
+    'Basado en la regla del libro: mejora un 1% cada día (+7% a la semana). Se calcula como tu porcentaje de cumplimiento × 1% × días del periodo.',
 };
 
 export type StringKey = keyof typeof es;
@@ -139,6 +151,18 @@ const en: Record<StringKey, string> = {
   historyTitle: 'DailyLog',
   historyEmpty: 'No days with scheduled habits yet.',
   notifBodyHabit: 'Did you complete it today? Reply right here.',
+  weeklyAnalysis: 'Weekly analysis',
+  monthlyAnalysis: 'Monthly analysis',
+  weeklyNotifBody: 'Your week in numbers: grades, chart and improvement. Tap to view.',
+  monthlyNotifBody: 'Your month in numbers: grades, chart and improvement. Tap to view.',
+  notificationsTitle: 'Notifications',
+  notifFeedEmpty: "You haven't received any notifications yet.",
+  gradesTitle: 'Grades',
+  repetitions: 'Repetitions',
+  improvement: 'Overall improvement',
+  improvementGoal: 'Goal',
+  improvementExplain:
+    "Based on the book's rule: get 1% better every day (+7% per week). Calculated as your completion rate × 1% × days in the period.",
 };
 
 const STRINGS: Record<Lang, Record<StringKey, string>> = { es, en };
