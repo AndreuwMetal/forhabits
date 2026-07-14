@@ -1,9 +1,11 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import { formatDateEs, toKey } from './types';
+import { Habit, formatDateEs, isDueOn, toKey } from './types';
 import { Lang, getString } from './i18n';
 
 const DEFAULT_TIME = '21:00';
+const CATEGORY = 'dailylog-habit';
+const MAX_SCHEDULED = 60; // iOS admite ~64 notificaciones programadas
 
 function parseTime(time: string): { hour: number; minute: number } {
   const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time.trim());
@@ -29,45 +31,102 @@ export async function requestNotificationPermission(): Promise<boolean> {
 }
 
 /**
- * Programa el DailyLog de los próximos 7 días con la fecha exacta en el
- * título ("DailyLog | dd/mm/aaaa"). Se reprograma en cada apertura de la app.
+ * Programa el DailyLog de los próximos días: una notificación por hábito
+ * debido, con botones "Completado" / "No completado" para registrar
+ * directamente desde la notificación, sin abrir la app.
  */
 export async function scheduleDailyLogs(
-  habitCount: number,
+  habits: Habit[],
   lang: Lang = 'es',
   time: string = DEFAULT_TIME
 ): Promise<void> {
   if (Platform.OS === 'web') return;
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
-    if (habitCount === 0) return;
+    if (habits.length === 0) return;
     const granted = await requestNotificationPermission();
     if (!granted) return;
 
+    // botones de acción (se registran en el idioma actual)
+    await Notifications.setNotificationCategoryAsync(CATEGORY, [
+      {
+        identifier: 'completed',
+        buttonTitle: `✅ ${getString(lang, 'completed')}`,
+        options: { opensAppToForeground: false },
+      },
+      {
+        identifier: 'not_completed',
+        buttonTitle: `❌ ${getString(lang, 'notCompleted')}`,
+        options: { opensAppToForeground: false },
+      },
+    ]);
+
     const { hour, minute } = parseTime(time);
+    const days = Math.max(1, Math.min(7, Math.floor(MAX_SCHEDULED / habits.length)));
     const now = new Date();
-    for (let i = 0; i < 7; i++) {
+
+    for (let i = 0; i < days; i++) {
       const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, hour, minute, 0);
       if (date <= now) continue;
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: `DailyLog | ${formatDateEs(date)}`,
-          body: getString(lang, 'notifBody'),
-          data: { dateKey: toKey(date) },
-        },
-        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date },
-      });
+      const dateKey = toKey(date);
+      for (const habit of habits) {
+        if (!isDueOn(habit, date)) continue;
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: `DailyLog | ${formatDateEs(date)}`,
+            body: `${habit.emoji} ${habit.name} — ${getString(lang, 'notifBodyHabit')}`,
+            data: { dateKey, habitId: habit.id },
+            categoryIdentifier: CATEGORY,
+          },
+          trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date },
+        });
+      }
     }
   } catch (e) {
     console.warn('No se pudieron programar las notificaciones', e);
   }
 }
 
-/** Devuelve una suscripción; el callback recibe la fecha del DailyLog tocado. */
-export function onDailyLogTap(cb: (dateKey: string) => void) {
+export type DailyLogResponse =
+  | { type: 'open'; dateKey: string }
+  | { type: 'action'; dateKey: string; habitId: string; done: boolean };
+
+function parseResponse(
+  response: Notifications.NotificationResponse
+): DailyLogResponse | null {
+  const data = response.notification.request.content.data as
+    | { dateKey?: unknown; habitId?: unknown }
+    | undefined;
+  const dateKey = data?.dateKey;
+  if (typeof dateKey !== 'string') return null;
+  const action = response.actionIdentifier;
+  if (action === 'completed' || action === 'not_completed') {
+    const habitId = data?.habitId;
+    if (typeof habitId !== 'string') return null;
+    return { type: 'action', dateKey, habitId, done: action === 'completed' };
+  }
+  return { type: 'open', dateKey };
+}
+
+/**
+ * Escucha las respuestas a las notificaciones DailyLog:
+ * - botón Completado / No completado → registro directo (sin abrir la app)
+ * - toque en el cuerpo → abrir el formulario del día
+ * También recupera la última respuesta si la app estaba cerrada.
+ */
+export function onDailyLogResponse(cb: (r: DailyLogResponse) => void) {
   if (Platform.OS === 'web') return { remove: () => {} };
-  return Notifications.addNotificationResponseReceivedListener((response) => {
-    const dateKey = response.notification.request.content.data?.dateKey;
-    if (typeof dateKey === 'string') cb(dateKey);
+  const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+    const parsed = parseResponse(response);
+    if (parsed) cb(parsed);
   });
+  Notifications.getLastNotificationResponseAsync()
+    .then((response) => {
+      if (response) {
+        const parsed = parseResponse(response);
+        if (parsed) cb(parsed);
+      }
+    })
+    .catch(() => {});
+  return sub;
 }

@@ -75,6 +75,7 @@ const es = {
   unlogged: 'Sin registrar',
   historyTitle: 'DailyLog',
   historyEmpty: 'Aún no hay días con hábitos programados.',
+  notifBodyHabit: '¿Lo has completado hoy? Responde desde aquí.',
 };
 
 export type StringKey = keyof typeof es;
@@ -137,6 +138,7 @@ const en: Record<StringKey, string> = {
   unlogged: 'Not logged',
   historyTitle: 'DailyLog',
   historyEmpty: 'No days with scheduled habits yet.',
+  notifBodyHabit: 'Did you complete it today? Reply right here.',
 };
 
 const STRINGS: Record<Lang, Record<StringKey, string>> = { es, en };

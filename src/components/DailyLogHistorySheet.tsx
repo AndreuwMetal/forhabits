@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Emoji from './Emoji';
 import { useStore } from '../store';
-import { scheduleDailyLogs } from '../notifications';
 import { formatDayTitle, useI18n } from '../i18n';
 import { addDays, formatDateEs, isDueOn, toKey } from '../types';
 import { theme } from '../theme';
@@ -34,12 +33,10 @@ export default function DailyLogHistorySheet({ visible, onClose }: Props) {
 
   const timeValid = TIME_RE.test(timeDraft.trim());
 
+  // al guardar la hora, la reprogramación se dispara automáticamente en Root
   const applyTime = (value: string) => {
     setTimeDraft(value);
-    if (TIME_RE.test(value.trim())) {
-      setNotifTime(value.trim());
-      scheduleDailyLogs(habits.length, lang, value.trim());
-    }
+    if (TIME_RE.test(value.trim())) setNotifTime(value.trim());
   };
 
   // días desde hoy hacia atrás hasta el primer uso (máx. MAX_DAYS), solo con hábitos programados

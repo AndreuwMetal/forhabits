@@ -6,28 +6,33 @@ import MainScreen from './src/screens/MainScreen';
 import DailyLogSheet from './src/components/DailyLogSheet';
 import { StoreProvider, useStore } from './src/store';
 import { LanguageProvider, useI18n } from './src/i18n';
-import { onDailyLogTap, scheduleDailyLogs } from './src/notifications';
+import { onDailyLogResponse, scheduleDailyLogs } from './src/notifications';
 import { theme } from './src/theme';
 
 function Root() {
-  const { ready, habits, notifTime } = useStore();
+  const { ready, habits, notifTime, saveDayLog } = useStore();
   const { lang } = useI18n();
   const [showIntro, setShowIntro] = useState(true);
   const [notificationDate, setNotificationDate] = useState<string | null>(null);
 
-  // Reprograma los DailyLog de la próxima semana en cada apertura
+  // Reprograma los DailyLog al abrir la app o cambiar hábitos, hora o idioma
   useEffect(() => {
-    if (ready) scheduleDailyLogs(habits.length, lang, notifTime);
-  }, [ready, habits.length, lang, notifTime]);
+    if (ready) scheduleDailyLogs(habits, lang, notifTime);
+  }, [ready, habits, lang, notifTime]);
 
-  // Al tocar la notificación DailyLog se abre el formulario del día
+  // Respuestas a la notificación DailyLog:
+  // botones → registro directo; toque → abrir el formulario del día
   useEffect(() => {
-    const sub = onDailyLogTap((dateKey) => {
-      setShowIntro(false);
-      setNotificationDate(dateKey);
+    const sub = onDailyLogResponse((r) => {
+      if (r.type === 'action') {
+        saveDayLog(r.dateKey, { [r.habitId]: r.done });
+      } else {
+        setShowIntro(false);
+        setNotificationDate(r.dateKey);
+      }
     });
     return () => sub.remove();
-  }, []);
+  }, [saveDayLog]);
 
   if (!ready) return null;
 

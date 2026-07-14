@@ -8,7 +8,6 @@ import DailyLogHistorySheet from '../components/DailyLogHistorySheet';
 import MonthView from './MonthView';
 import DayView from './DayView';
 import { useStore } from '../store';
-import { scheduleDailyLogs } from '../notifications';
 import { useI18n } from '../i18n';
 import { theme } from '../theme';
 import { fromKey, startOfMonth, toKey } from '../types';
@@ -56,12 +55,7 @@ export default function RecordsScreen() {
                 logs={logs}
                 onPress={() => setHistoryVisible(true)}
               />
-              <HabitForm
-                onSave={(data) => {
-                  addHabit(data);
-                  scheduleDailyLogs(habits.length + 1, lang);
-                }}
-              />
+              <HabitForm onSave={addHabit} />
             </View>
           }
         />
@@ -110,10 +104,7 @@ export default function RecordsScreen() {
         logs={logs}
         firstUse={startOfMonth(firstUseDate)}
         onClose={() => setLegendVisible(false)}
-        onDelete={(id) => {
-          removeHabit(id);
-          scheduleDailyLogs(habits.length - 1, lang);
-        }}
+        onDelete={removeHabit}
         onUpdate={(id, data) => updateHabit(id, data)}
       />
       <DailyLogHistorySheet
