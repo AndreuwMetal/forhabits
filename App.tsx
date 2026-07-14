@@ -10,15 +10,15 @@ import { onDailyLogTap, scheduleDailyLogs } from './src/notifications';
 import { theme } from './src/theme';
 
 function Root() {
-  const { ready, habits } = useStore();
+  const { ready, habits, notifTime } = useStore();
   const { lang } = useI18n();
   const [showIntro, setShowIntro] = useState(true);
   const [notificationDate, setNotificationDate] = useState<string | null>(null);
 
   // Reprograma los DailyLog de la próxima semana en cada apertura
   useEffect(() => {
-    if (ready) scheduleDailyLogs(habits.length, lang);
-  }, [ready, habits.length, lang]);
+    if (ready) scheduleDailyLogs(habits.length, lang, notifTime);
+  }, [ready, habits.length, lang, notifTime]);
 
   // Al tocar la notificación DailyLog se abre el formulario del día
   useEffect(() => {

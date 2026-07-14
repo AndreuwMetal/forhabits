@@ -4,6 +4,7 @@ import MonthCalendar, { MonthCalendarRef } from '../components/MonthCalendar';
 import HabitForm from '../components/HabitForm';
 import HeroCard from '../components/HeroCard';
 import HabitsLegendModal from '../components/HabitsLegendModal';
+import DailyLogHistorySheet from '../components/DailyLogHistorySheet';
 import MonthView from './MonthView';
 import DayView from './DayView';
 import { useStore } from '../store';
@@ -23,6 +24,7 @@ export default function RecordsScreen() {
   const { lang, t } = useI18n();
   const calRef = useRef<MonthCalendarRef>(null);
   const [legendVisible, setLegendVisible] = useState(false);
+  const [historyVisible, setHistoryVisible] = useState(false);
   const [view, setView] = useState<ViewState>({ kind: 'list' });
 
   const firstUseDate = new Date(firstUse);
@@ -49,7 +51,11 @@ export default function RecordsScreen() {
           onMonthTitlePress={(month) => setView({ kind: 'month', month })}
           ListHeaderComponent={
             <View>
-              <HeroCard habits={habits} logs={logs} />
+              <HeroCard
+                habits={habits}
+                logs={logs}
+                onPress={() => setHistoryVisible(true)}
+              />
               <HabitForm
                 onSave={(data) => {
                   addHabit(data);
@@ -109,6 +115,10 @@ export default function RecordsScreen() {
           scheduleDailyLogs(habits.length - 1, lang);
         }}
         onUpdate={(id, data) => updateHabit(id, data)}
+      />
+      <DailyLogHistorySheet
+        visible={historyVisible}
+        onClose={() => setHistoryVisible(false)}
       />
     </View>
   );

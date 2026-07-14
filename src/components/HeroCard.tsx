@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import GlassCard from './GlassCard';
 import { Habit, Logs } from '../types';
@@ -10,16 +10,19 @@ import { theme } from '../theme';
 interface Props {
   habits: Habit[];
   logs: Logs;
+  /** al tocar el panel se abre el historial de DailyLogs */
+  onPress?: () => void;
 }
 
 /** Panel superior con el progreso de hoy y la racha actual */
-export default function HeroCard({ habits, logs }: Props) {
+export default function HeroCard({ habits, logs, onPress }: Props) {
   const { lang, t } = useI18n();
   const { done, total } = todayProgress(habits, logs);
   const streak = currentStreak(habits, logs);
   const pct = total === 0 ? 0 : done / total;
 
   return (
+    <Pressable onPress={onPress}>
     <GlassCard style={styles.card} glow={theme.colors.primary}>
       <LinearGradient
         colors={[...theme.gradients.hero]}
@@ -56,6 +59,7 @@ export default function HeroCard({ habits, logs }: Props) {
         </View>
       </LinearGradient>
     </GlassCard>
+    </Pressable>
   );
 }
 

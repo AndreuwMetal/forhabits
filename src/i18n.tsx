@@ -69,6 +69,12 @@ const es = {
   language: 'Idioma',
   editHabit: 'Editar hábito',
   saveChanges: 'Guardar cambios',
+  notifTimeTitle: 'Notificación diaria',
+  notifTimeLabel: 'Hora a la que se envía el DailyLog',
+  notifTimeHint: 'Formato 24 h, ej. 21:00',
+  unlogged: 'Sin registrar',
+  historyTitle: 'DailyLog',
+  historyEmpty: 'Aún no hay días con hábitos programados.',
 };
 
 export type StringKey = keyof typeof es;
@@ -125,6 +131,12 @@ const en: Record<StringKey, string> = {
   language: 'Language',
   editHabit: 'Edit habit',
   saveChanges: 'Save changes',
+  notifTimeTitle: 'Daily notification',
+  notifTimeLabel: 'Time the DailyLog is sent',
+  notifTimeHint: '24 h format, e.g. 21:00',
+  unlogged: 'Not logged',
+  historyTitle: 'DailyLog',
+  historyEmpty: 'No days with scheduled habits yet.',
 };
 
 const STRINGS: Record<Lang, Record<StringKey, string>> = { es, en };

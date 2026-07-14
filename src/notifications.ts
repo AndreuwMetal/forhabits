@@ -3,7 +3,13 @@ import * as Notifications from 'expo-notifications';
 import { formatDateEs, toKey } from './types';
 import { Lang, getString } from './i18n';
 
-const DAILYLOG_HOUR = 21;
+const DEFAULT_TIME = '21:00';
+
+function parseTime(time: string): { hour: number; minute: number } {
+  const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time.trim());
+  if (!m) return { hour: 21, minute: 0 };
+  return { hour: Number(m[1]), minute: Number(m[2]) };
+}
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -28,7 +34,8 @@ export async function requestNotificationPermission(): Promise<boolean> {
  */
 export async function scheduleDailyLogs(
   habitCount: number,
-  lang: Lang = 'es'
+  lang: Lang = 'es',
+  time: string = DEFAULT_TIME
 ): Promise<void> {
   if (Platform.OS === 'web') return;
   try {
@@ -37,9 +44,10 @@ export async function scheduleDailyLogs(
     const granted = await requestNotificationPermission();
     if (!granted) return;
 
+    const { hour, minute } = parseTime(time);
     const now = new Date();
     for (let i = 0; i < 7; i++) {
-      const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, DAILYLOG_HOUR, 0, 0);
+      const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, hour, minute, 0);
       if (date <= now) continue;
       await Notifications.scheduleNotificationAsync({
         content: {

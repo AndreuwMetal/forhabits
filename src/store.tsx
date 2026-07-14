@@ -11,6 +11,7 @@ import { DayLog, Habit, Logs } from './types';
 const HABITS_KEY = 'forhabits.habits.v1';
 const LOGS_KEY = 'forhabits.logs.v1';
 const FIRST_USE_KEY = 'forhabits.firstUse.v1';
+const NOTIF_TIME_KEY = 'forhabits.notifTime.v1';
 
 interface Store {
   ready: boolean;
@@ -18,6 +19,9 @@ interface Store {
   logs: Logs;
   /** ISO del día en que se abrió la app por primera vez */
   firstUse: string;
+  /** hora "HH:MM" a la que se envía la notificación DailyLog */
+  notifTime: string;
+  setNotifTime: (t: string) => void;
   addHabit: (h: Omit<Habit, 'id' | 'createdAt'>) => void;
   updateHabit: (id: string, data: Partial<Omit<Habit, 'id' | 'createdAt'>>) => void;
   removeHabit: (id: string) => void;
@@ -31,17 +35,20 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [logs, setLogs] = useState<Logs>({});
   const [firstUse, setFirstUse] = useState<string>(new Date().toISOString());
+  const [notifTime, setNotifTimeState] = useState('21:00');
 
   useEffect(() => {
     (async () => {
       try {
-        const [h, l, f] = await Promise.all([
+        const [h, l, f, nt] = await Promise.all([
           AsyncStorage.getItem(HABITS_KEY),
           AsyncStorage.getItem(LOGS_KEY),
           AsyncStorage.getItem(FIRST_USE_KEY),
+          AsyncStorage.getItem(NOTIF_TIME_KEY),
         ]);
         if (h) setHabits(JSON.parse(h));
         if (l) setLogs(JSON.parse(l));
+        if (nt) setNotifTimeState(nt);
         if (f) {
           setFirstUse(f);
         } else {
@@ -79,6 +86,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [habits, persistHabits]
   );
 
+  const setNotifTime = useCallback((t: string) => {
+    setNotifTimeState(t);
+    AsyncStorage.setItem(NOTIF_TIME_KEY, t).catch(() => {});
+  }, []);
+
   const updateHabit = useCallback(
     (id: string, data: Partial<Omit<Habit, 'id' | 'createdAt'>>) => {
       persistHabits(
@@ -104,7 +116,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <StoreContext.Provider
-      value={{ ready, habits, logs, firstUse, addHabit, updateHabit, removeHabit, saveDayLog }}
+      value={{
+        ready,
+        habits,
+        logs,
+        firstUse,
+        notifTime,
+        setNotifTime,
+        addHabit,
+        updateHabit,
+        removeHabit,
+        saveDayLog,
+      }}
     >
       {children}
     </StoreContext.Provider>
