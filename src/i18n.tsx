@@ -88,6 +88,61 @@ const es = {
   improvementGoal: 'Objetivo',
   improvementExplain:
     'Basado en la regla del libro: mejora un 1% cada día (+7% a la semana). Se calcula como tu porcentaje de cumplimiento × 1% × días del periodo.',
+
+  // ── premium ───────────────────────────────────────────────────────────────
+  tabPremium: 'Premium',
+  premiumBadge: 'PREMIUM',
+  premiumTitle: 'ForHabits Premium',
+  premiumPitch:
+    'Compite en la bolsa de retos, sube al podio de rachas y analiza tu progreso con gráficas de seguimiento.',
+  premiumFeatureChallenges: 'Bolsa de retos con otras personas',
+  premiumFeaturePodium: 'Podio de rachas por hábito',
+  premiumFeatureCharts: 'Gráficas de seguimiento',
+  premiumUnlock: 'Activar Premium',
+  premiumDisable: 'Desactivar Premium',
+  premiumActive: 'Premium activo',
+  premiumLocalNote:
+    'Activación local de prueba: todavía no hay compras reales conectadas.',
+
+  // ── bolsa de retos ────────────────────────────────────────────────────────
+  challengesTitle: 'Bolsa de retos',
+  challengesSubtitle:
+    'Entra en un reto y compite con gente que también intenta mejorar sus hábitos.',
+  challengesActive: 'Tus retos',
+  challengesCatalog: 'Retos disponibles',
+  challengeJoin: 'Entrar al reto',
+  challengeLeave: 'Salir del reto',
+  challengeJoined: 'Dentro',
+  challengeDays: 'días',
+  challengeParticipants: 'participantes',
+  challengeRanking: 'Clasificación',
+  challengeYou: 'Tú',
+  challengePickHabit: 'Elige con qué hábito compites',
+  challengeNoHabits: 'Crea primero un hábito para poder entrar en un reto.',
+  challengeProgress: 'Progreso',
+  challengeDayOf: 'Día {n} de {total}',
+  challengeFinished: 'Reto terminado',
+  challengesEmpty: 'Todavía no estás en ningún reto.',
+  challengeSimulatedNote:
+    'Participantes simulados en tu dispositivo hasta conectar el servidor.',
+
+  // ── podio de rachas ───────────────────────────────────────────────────────
+  podiumTitle: 'Podio de rachas',
+  podiumSubtitle: 'Tus hábitos ordenados por racha actual.',
+  podiumEmpty: 'Aún no hay rachas: registra tus hábitos para entrar al podio.',
+  podiumCurrent: 'Racha actual',
+  podiumBest: 'Mejor racha',
+  podiumRest: 'Resto de hábitos',
+
+  // ── gráficas de seguimiento ───────────────────────────────────────────────
+  chartsTitle: 'Gráficas de seguimiento',
+  chartsSubtitle: 'Cómo evoluciona tu cumplimiento en el tiempo.',
+  chartsCompletion: 'Cumplimiento diario',
+  chartsByHabit: 'Cumplimiento por hábito',
+  chartsByWeekday: 'Por día de la semana',
+  chartsEmpty: 'Todavía no hay datos suficientes para dibujar la gráfica.',
+  chartsAverage: 'Media',
+  chartsRange: 'Periodo',
 };
 
 export type StringKey = keyof typeof es;
@@ -163,6 +218,60 @@ const en: Record<StringKey, string> = {
   improvementGoal: 'Goal',
   improvementExplain:
     "Based on the book's rule: get 1% better every day (+7% per week). Calculated as your completion rate × 1% × days in the period.",
+
+  // ── premium ───────────────────────────────────────────────────────────────
+  tabPremium: 'Premium',
+  premiumBadge: 'PREMIUM',
+  premiumTitle: 'ForHabits Premium',
+  premiumPitch:
+    'Compete in the challenge pool, climb the streak podium and analyse your progress with tracking charts.',
+  premiumFeatureChallenges: 'Challenge pool with other people',
+  premiumFeaturePodium: 'Streak podium per habit',
+  premiumFeatureCharts: 'Tracking charts',
+  premiumUnlock: 'Unlock Premium',
+  premiumDisable: 'Turn Premium off',
+  premiumActive: 'Premium active',
+  premiumLocalNote: 'Local trial unlock: real purchases are not wired up yet.',
+
+  // ── challenge pool ────────────────────────────────────────────────────────
+  challengesTitle: 'Challenge pool',
+  challengesSubtitle:
+    'Join a challenge and compete with people who are also improving their habits.',
+  challengesActive: 'Your challenges',
+  challengesCatalog: 'Available challenges',
+  challengeJoin: 'Join challenge',
+  challengeLeave: 'Leave challenge',
+  challengeJoined: 'Joined',
+  challengeDays: 'days',
+  challengeParticipants: 'participants',
+  challengeRanking: 'Leaderboard',
+  challengeYou: 'You',
+  challengePickHabit: 'Pick the habit you compete with',
+  challengeNoHabits: 'Create a habit first to join a challenge.',
+  challengeProgress: 'Progress',
+  challengeDayOf: 'Day {n} of {total}',
+  challengeFinished: 'Challenge finished',
+  challengesEmpty: "You haven't joined any challenge yet.",
+  challengeSimulatedNote:
+    'Participants are simulated on your device until the server is connected.',
+
+  // ── streak podium ─────────────────────────────────────────────────────────
+  podiumTitle: 'Streak podium',
+  podiumSubtitle: 'Your habits ranked by current streak.',
+  podiumEmpty: 'No streaks yet: log your habits to enter the podium.',
+  podiumCurrent: 'Current streak',
+  podiumBest: 'Best streak',
+  podiumRest: 'Other habits',
+
+  // ── tracking charts ───────────────────────────────────────────────────────
+  chartsTitle: 'Tracking charts',
+  chartsSubtitle: 'How your completion evolves over time.',
+  chartsCompletion: 'Daily completion',
+  chartsByHabit: 'Completion per habit',
+  chartsByWeekday: 'By weekday',
+  chartsEmpty: 'Not enough data to draw the chart yet.',
+  chartsAverage: 'Average',
+  chartsRange: 'Range',
 };
 
 const STRINGS: Record<Lang, Record<StringKey, string>> = { es, en };

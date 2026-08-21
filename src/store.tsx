@@ -12,6 +12,7 @@ const HABITS_KEY = 'forhabits.habits.v1';
 const LOGS_KEY = 'forhabits.logs.v1';
 const FIRST_USE_KEY = 'forhabits.firstUse.v1';
 const NOTIF_TIME_KEY = 'forhabits.notifTime.v1';
+const PREMIUM_KEY = 'forhabits.premium.v1';
 
 interface Store {
   ready: boolean;
@@ -22,6 +23,9 @@ interface Store {
   /** hora "HH:MM" a la que se envía la notificación DailyLog */
   notifTime: string;
   setNotifTime: (t: string) => void;
+  /** ponytail: flag local, sin compras reales; sustituir por el recibo de la store cuando exista */
+  isPremium: boolean;
+  setPremium: (v: boolean) => void;
   addHabit: (h: Omit<Habit, 'id' | 'createdAt'>) => void;
   updateHabit: (id: string, data: Partial<Omit<Habit, 'id' | 'createdAt'>>) => void;
   removeHabit: (id: string) => void;
@@ -36,19 +40,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<Logs>({});
   const [firstUse, setFirstUse] = useState<string>(new Date().toISOString());
   const [notifTime, setNotifTimeState] = useState('21:00');
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const [h, l, f, nt] = await Promise.all([
+        const [h, l, f, nt, p] = await Promise.all([
           AsyncStorage.getItem(HABITS_KEY),
           AsyncStorage.getItem(LOGS_KEY),
           AsyncStorage.getItem(FIRST_USE_KEY),
           AsyncStorage.getItem(NOTIF_TIME_KEY),
+          AsyncStorage.getItem(PREMIUM_KEY),
         ]);
         if (h) setHabits(JSON.parse(h));
         if (l) setLogs(JSON.parse(l));
         if (nt) setNotifTimeState(nt);
+        if (p === '1') setIsPremium(true);
         if (f) {
           setFirstUse(f);
         } else {
@@ -91,6 +98,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem(NOTIF_TIME_KEY, t).catch(() => {});
   }, []);
 
+  const setPremium = useCallback((v: boolean) => {
+    setIsPremium(v);
+    AsyncStorage.setItem(PREMIUM_KEY, v ? '1' : '0').catch(() => {});
+  }, []);
+
   const updateHabit = useCallback(
     (id: string, data: Partial<Omit<Habit, 'id' | 'createdAt'>>) => {
       persistHabits(
@@ -123,6 +135,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         firstUse,
         notifTime,
         setNotifTime,
+        isPremium,
+        setPremium,
         addHabit,
         updateHabit,
         removeHabit,

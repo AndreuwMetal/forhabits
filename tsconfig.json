@@ -1,6 +1,9 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    // los self-check corren con `node scripts/selfcheck.ts`, que exige la extensión
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   }
 }

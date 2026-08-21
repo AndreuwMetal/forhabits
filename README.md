@@ -31,12 +31,29 @@ App móvil para desarrollar hábitos beneficiosos y eliminar los malos, basada e
 - Modo *Eliminar hábito*: usa las leyes inversas (invisible, poco atractivo,
   difícil, insatisfactorio).
 
+### 3. Premium
+
+Pestaña **Premium**, bloqueada tras un flag local (`isPremium` en el store, `false`
+por defecto) con pantalla de presentación. Todavía no hay compras reales: el botón
+*Activar Premium* desbloquea en el dispositivo, listo para cablear el recibo de la
+tienda cuando exista.
+
+- **Bolsa de retos**: entra en un reto del catálogo (7–30 días) vinculándolo a uno
+  de tus hábitos y compite en una clasificación. Los rivales son **simulados en el
+  propio dispositivo** — van etiquetados `(demo)` y hay un aviso en la tabla —
+  hasta que haya servidor.
+- **Podio de rachas**: tus hábitos ordenados por racha actual, con medallas para el
+  top 3 y la mejor racha histórica de cada uno.
+- **Gráficas de seguimiento**: cumplimiento diario (7/30/90 días), por hábito y por
+  día de la semana. Los días sin hábitos programados no cuentan como 0 %.
+
 ## Desarrollo
 
 ```bash
 npm install
 npx expo start        # escanea el QR con Expo Go
 npm run web           # vista previa en el navegador
+npm run check         # tipos + self-check de la lógica premium
 ```
 
 ## Estructura

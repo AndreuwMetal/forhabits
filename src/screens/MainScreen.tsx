@@ -3,13 +3,16 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import RecordsScreen from './RecordsScreen';
 import ApplyScreen from './ApplyScreen';
+import PremiumScreen from './PremiumScreen';
 import NotificationsFeedSheet from '../components/NotificationsFeedSheet';
 import AnalysisSheet, { AnalysisRequest } from '../components/AnalysisSheet';
 import DailyLogSheet from '../components/DailyLogSheet';
 import { LANGUAGES, useI18n } from '../i18n';
 import { theme } from '../theme';
 
-type Tab = 'records' | 'apply';
+type Tab = 'records' | 'apply' | 'premium';
+
+const TABS: Tab[] = ['records', 'apply', 'premium'];
 
 export default function MainScreen() {
   const [tab, setTab] = useState<Tab>('records');
@@ -19,7 +22,8 @@ export default function MainScreen() {
   const [feedAnalysis, setFeedAnalysis] = useState<AnalysisRequest | null>(null);
   const { lang, setLang, t } = useI18n();
 
-  const tabLabel = (x: Tab) => (x === 'records' ? t('tabRecords') : t('tabApply'));
+  const tabLabel = (x: Tab) =>
+    x === 'records' ? t('tabRecords') : x === 'apply' ? t('tabApply') : t('tabPremium');
 
   return (
     <LinearGradient colors={[...theme.gradients.backdrop]} style={styles.root}>
@@ -29,7 +33,7 @@ export default function MainScreen() {
         </Text>
         <View style={styles.headerRight}>
           <View style={styles.segment}>
-            {(['records', 'apply'] as Tab[]).map((x) =>
+            {TABS.map((x) =>
               tab === x ? (
                 <LinearGradient
                   key={x}
@@ -65,6 +69,9 @@ export default function MainScreen() {
         </View>
         <View style={[styles.page, tab !== 'apply' && styles.hidden]}>
           <ApplyScreen />
+        </View>
+        <View style={[styles.page, tab !== 'premium' && styles.hidden]}>
+          <PremiumScreen />
         </View>
       </View>
 
@@ -139,18 +146,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
+  // paddings ajustados: con tres pestañas la cabecera se queda sin sitio
   segBtn: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 999,
   },
   segActive: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 999,
   },
-  segText: { fontSize: 13.5, fontWeight: '700', color: theme.colors.subtext },
-  segTextActive: { fontSize: 13.5, fontWeight: '800', color: '#fff' },
+  segText: { fontSize: 12.5, fontWeight: '700', color: theme.colors.subtext },
+  segTextActive: { fontSize: 12.5, fontWeight: '800', color: '#fff' },
   bellChip: {
     paddingHorizontal: 9,
     paddingVertical: 7,
