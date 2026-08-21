@@ -117,7 +117,8 @@ supabase functions deploy stripe-webhook --no-verify-jwt
    npx expo start
    ```
 
-2. Abre la pestaña **Premium** y pulsa **Hazte Premium**.
+2. Abre la pestaña **Premium** y pulsa **Hazte Premium**. La app abre el
+   **navegador del sistema**: el pago ocurre en la web, no dentro de la app.
 
 3. Completa el checkout de Stripe con la tarjeta de prueba:
    ```
@@ -126,7 +127,9 @@ supabase functions deploy stripe-webhook --no-verify-jwt
    CVC: cualquier número de 3 dígitos
    ```
 
-4. Vuelve a la app. El estado premium debería estar **activo inmediatamente**.
+4. Vuelve a la app. Al pasar a primer plano vuelve a consultar el servidor, así
+   que el premium se activa solo. Si el webhook aún no había llegado, el botón
+   **Ya he pagado** lo comprueba otra vez.
 
 Si no se activa:
 - Abre el dashboard de Supabase → **Functions** → `stripe-webhook` y revisa los logs.
@@ -136,7 +139,13 @@ Si no se activa:
 
 ## Avisos
 
-**Apple y Google exigen In-App Purchase (IAP) o Play Billing** para vender contenido digital dentro de la app en sus tiendas. Stripe Checkout es válido en web y para cobrar fuera de la app, pero una build para App Store que venda premium con Stripe puede ser rechazada. Si tu destino es la tienda, habrá que integrar IAP; el código ya soporta múltiples orígenes de premium porque la columna `profiles.is_premium` está en el servidor.
+**El pago se hace en la web, fuera de la app.** El botón abre el navegador del
+sistema con `Linking.openURL`, no un navegador embebido: el cobro nunca ocurre
+dentro de la app. Aun así, Apple y Google tienen reglas *anti-steering* sobre
+enlazar a pagos externos y varían por país y por fecha; si vas a publicar en la
+App Store, revisa la norma vigente para tu mercado antes de enviar la build. Si
+te obligan a IAP, el cambio es acotado: `profiles.is_premium` ya es la fuente de
+verdad en el servidor y solo cambiaría quién la escribe.
 
 **Variable opcional `APP_RETURN_URL`** (por defecto `forhabits://premium`): si Stripe rechaza el custom scheme, publica una página HTTPS que redirija a `forhabits://premium` y ejecuta:
 ```bash

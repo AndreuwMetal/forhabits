@@ -12,7 +12,6 @@
     "expo-notifications": "~57.0.3",
     "expo-status-bar": "~57.0.0",
     "expo-updates": "~57.0.6",
-    "expo-web-browser": "~57.0.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.0",

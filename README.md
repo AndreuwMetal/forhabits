@@ -36,8 +36,10 @@ App móvil para desarrollar hábitos beneficiosos y eliminar los malos, basada e
 Pestaña **Premium**. Sin claves configuradas funciona en local: el botón *Activar
 Premium* desbloquea en el dispositivo y los rivales de los retos son simulados.
 En cuanto se rellenan las variables de `.env.example` se activan solos el pago real
-(Stripe Checkout) y la clasificación con gente real (Supabase). Los pasos exactos
-están en [SETUP.md](SETUP.md).
+y la clasificación con gente real (Supabase). **El pago ocurre en la web**: el botón
+abre el Checkout de Stripe en el navegador del sistema y, al volver a la app, el
+premium se confirma solo contra el servidor. Los pasos exactos están en
+[SETUP.md](SETUP.md).
 
 - **Bolsa de retos**: entra en un reto del catálogo (7–30 días) vinculándolo a uno
   de tus hábitos y compite en una clasificación. Con Supabase configurado los

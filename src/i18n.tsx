@@ -107,6 +107,8 @@ const es = {
   premiumRestore: 'Ya he pagado',
   premiumChecking: 'Comprobando tu suscripción…',
   premiumError: 'No se pudo completar la compra. Inténtalo de nuevo.',
+  premiumWebNote:
+    'Termina el pago en el navegador y vuelve aquí: tu Premium se activa solo.',
   premiumDevUnlock: 'Desbloqueo local (desarrollo)',
 
   // ── bolsa de retos ────────────────────────────────────────────────────────
@@ -244,6 +246,8 @@ const en: Record<StringKey, string> = {
   premiumRestore: 'I already paid',
   premiumChecking: 'Checking your subscription…',
   premiumError: 'Checkout could not be completed. Please try again.',
+  premiumWebNote:
+    'Finish the payment in your browser and come back: Premium activates itself.',
   premiumDevUnlock: 'Local unlock (development)',
 
   // ── challenge pool ────────────────────────────────────────────────────────

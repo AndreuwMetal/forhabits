@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DayLog, Habit, Logs } from './types';
 import { hasBackend } from './config';
@@ -90,6 +91,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         refreshPremium();
       }
     })();
+  }, [refreshPremium]);
+
+  // El pago se hace en el navegador: al volver a la app comprobamos si el
+  // webhook de Stripe ya ha marcado el premium.
+  useEffect(() => {
+    if (!hasBackend) return;
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') refreshPremium();
+    });
+    return () => sub.remove();
   }, [refreshPremium]);
 
   const persistHabits = useCallback((next: Habit[]) => {

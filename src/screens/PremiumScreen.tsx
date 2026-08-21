@@ -15,13 +15,15 @@ export default function PremiumScreen() {
   const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
+  const [sentToWeb, setSentToWeb] = useState(false);
 
   const buy = async () => {
     setBusy(true);
     setError(false);
     const result = await startCheckout();
     setBusy(false);
-    if (!result.ok && !result.cancelled) setError(true);
+    setSentToWeb(result.ok);
+    setError(!result.ok);
   };
 
   const restore = async () => {
@@ -79,6 +81,7 @@ export default function PremiumScreen() {
           </Pressable>
 
           {busy && <Text style={styles.note}>{t('premiumChecking')}</Text>}
+          {sentToWeb && !busy && <Text style={styles.note}>{t('premiumWebNote')}</Text>}
           {error && <Text style={styles.error}>{t('premiumError')}</Text>}
 
           {hasPayments ? (
