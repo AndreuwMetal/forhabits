@@ -41,7 +41,8 @@
           "icon": "./assets/icon.png",
           "color": "#B026FF"
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {

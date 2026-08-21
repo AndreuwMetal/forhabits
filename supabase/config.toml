@@ -1,0 +1,21 @@
+# Configuración mínima para `supabase link`, `supabase db push` y
+# `supabase functions deploy`. El proyecto real lo fija `supabase link --project-ref`;
+# `project_id` es solo la etiqueta del entorno local.
+project_id = "forhabits"
+
+[auth]
+# Los usuarios de ForHabits son anónimos: no hay email ni contraseña, solo
+# `supabase.auth.signInAnonymously()`. Aun así reciben el rol `authenticated`,
+# que es al que apuntan todas las políticas RLS de la migración.
+# Ojo: esta clave configura `supabase start` (local). En el proyecto hospedado
+# hay que activarlo además en Dashboard → Authentication → Sign In / Providers.
+enable_anonymous_sign_ins = true
+
+[functions.create-checkout]
+# La app llama con el JWT del usuario; la función además exige `auth: 'user'`.
+verify_jwt = true
+
+[functions.stripe-webhook]
+# Stripe no manda JWT: la autenticidad se comprueba con la firma del webhook.
+# Equivale a desplegar con `--no-verify-jwt`.
+verify_jwt = false

@@ -5,5 +5,7 @@
     // los self-check corren con `node scripts/selfcheck.ts`, que exige la extensión
     "noEmit": true,
     "allowImportingTsExtensions": true
-  }
+  },
+  // supabase/ es código Deno: lo comprueba el CLI de Supabase, no tsc
+  "exclude": ["node_modules", "supabase"]
 }

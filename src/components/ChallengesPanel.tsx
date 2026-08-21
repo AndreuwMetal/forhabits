@@ -14,11 +14,13 @@ import { useStore } from '../store';
 import { useI18n } from '../i18n';
 import { Habit, Logs, formatDateEs } from '../types';
 import { theme } from '../theme';
+import { hasBackend } from '../config';
 import {
   ActiveChallenge,
   CHALLENGES,
   CHALLENGES_KEY,
   ChallengeDef,
+  RankEntry,
   buildRanking,
   challengeDayIndex,
   challengeTitle,
@@ -30,6 +32,7 @@ import {
   topWithUser,
   userCompletedDays,
 } from '../challenges';
+import { fetchRanking, joinRemote, leaveRemote, syncProgress } from '../remote-challenges';
 
 const RANKING_LIMIT = 8;
 
@@ -56,15 +59,23 @@ export default function ChallengesPanel() {
 
   const join = (habitId: string) => {
     if (!picking) return;
-    persist([
-      ...active,
-      { challengeId: picking.id, habitId, startedAt: new Date().toISOString() },
-    ]);
+    const def = picking;
+    const habit = habits.find((h) => h.id === habitId);
+    const entry: ActiveChallenge = {
+      challengeId: def.id,
+      habitId,
+      startedAt: new Date().toISOString(),
+    };
+    persist([...active, entry]);
     setPicking(null);
+    // AsyncStorage manda: el reto ya cuenta localmente aunque esto falle.
+    if (hasBackend && habit) joinRemote(entry, def, habit).catch(() => {});
   };
 
-  const leave = (challengeId: string) =>
+  const leave = (challengeId: string) => {
     persist(active.filter((a) => a.challengeId !== challengeId));
+    if (hasBackend) leaveRemote(challengeId).catch(() => {});
+  };
 
   const joinedIds = active.map((a) => a.challengeId);
 
@@ -190,10 +201,41 @@ function ActiveCard({ def, active, habits, logs, today, onLeave }: ActiveCardPro
   const day = challengeDayIndex(active.startedAt, def.days, today);
   const done = userCompletedDays(logs, active.habitId, active.startedAt, def.days, today);
   const finished = isFinished(active.startedAt, def.days, today);
-  const ranking = useMemo(
+  const localRanking = useMemo(
     () => buildRanking(def, active, logs, today),
     [def, active, logs, today]
   );
+
+  const [remoteRanking, setRemoteRanking] = useState<RankEntry[] | null>(null);
+  const [loadingRemote, setLoadingRemote] = useState(hasBackend);
+
+  // Sincroniza el progreso propio y, después, refresca la clasificación real.
+  // Se encadena (no en paralelo) para que el fetch ya vea el done_days nuevo.
+  // ponytail: sin tiempo real ni reintentos; si la petición falla, se reintenta
+  // solo cuando vuelva a cambiar `done` o se vuelva a montar la tarjeta.
+  useEffect(() => {
+    if (!hasBackend) {
+      setRemoteRanking(null);
+      setLoadingRemote(false);
+      return;
+    }
+    let cancelled = false;
+    setLoadingRemote(true);
+    syncProgress(active, def, done)
+      .catch(() => {})
+      .then(() => fetchRanking(def))
+      .then((entries) => {
+        if (cancelled) return;
+        setRemoteRanking(entries);
+        setLoadingRemote(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [def, active, done]);
+
+  const usingRemote = hasBackend && remoteRanking !== null;
+  const ranking = usingRemote ? remoteRanking! : localRanking;
   const rows = topWithUser(ranking, RANKING_LIMIT);
   const pct = Math.min(1, done / def.days);
 
@@ -257,7 +299,13 @@ function ActiveCard({ def, active, habits, logs, today, onLeave }: ActiveCardPro
             </View>
           );
         })}
-        <Text style={styles.simNote}>ℹ️ {t('challengeSimulatedNote')}</Text>
+        {loadingRemote ? (
+          <Text style={styles.simNote}>{t('challengeSyncing')}</Text>
+        ) : usingRemote ? null : hasBackend ? (
+          <Text style={styles.simNote}>ℹ️ {t('challengeOffline')}</Text>
+        ) : (
+          <Text style={styles.simNote}>ℹ️ {t('challengeSimulatedNote')}</Text>
+        )}
 
         <Pressable style={styles.leaveBtn} onPress={onLeave}>
           <Text style={styles.leaveText}>{t('challengeLeave')}</Text>

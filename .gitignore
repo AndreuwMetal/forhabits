@@ -39,3 +39,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# variables de entorno (EXPO_PUBLIC_*): usa .env.local o .env, nunca en git
+.env
+supabase/.temp/

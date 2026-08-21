@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DayLog, Habit, Logs } from './types';
+import { hasBackend } from './config';
+import { fetchPremium } from './billing';
 
 const HABITS_KEY = 'forhabits.habits.v1';
 const LOGS_KEY = 'forhabits.logs.v1';
@@ -23,9 +25,14 @@ interface Store {
   /** hora "HH:MM" a la que se envía la notificación DailyLog */
   notifTime: string;
   setNotifTime: (t: string) => void;
-  /** ponytail: flag local, sin compras reales; sustituir por el recibo de la store cuando exista */
+  /**
+   * Con backend configurado viene de Supabase (`profiles.is_premium`), cacheado
+   * en AsyncStorage. Sin backend es el flag local de desarrollo de siempre.
+   */
   isPremium: boolean;
   setPremium: (v: boolean) => void;
+  /** Repite la lectura del estado premium en el servidor; no-op sin backend */
+  refreshPremium: () => Promise<void>;
   addHabit: (h: Omit<Habit, 'id' | 'createdAt'>) => void;
   updateHabit: (id: string, data: Partial<Omit<Habit, 'id' | 'createdAt'>>) => void;
   removeHabit: (id: string) => void;
@@ -41,6 +48,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [firstUse, setFirstUse] = useState<string>(new Date().toISOString());
   const [notifTime, setNotifTimeState] = useState('21:00');
   const [isPremium, setIsPremium] = useState(false);
+
+  const refreshPremium = useCallback(async () => {
+    if (!hasBackend) return;
+    try {
+      const premium = await fetchPremium();
+      setIsPremium(premium);
+      AsyncStorage.setItem(PREMIUM_KEY, premium ? '1' : '0').catch(() => {});
+    } catch (e) {
+      // sin red o servidor caído: nos quedamos con el último valor cacheado
+      console.warn('No se pudo comprobar el estado premium', e);
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -67,9 +86,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         console.warn('No se pudieron cargar los datos', e);
       } finally {
         setReady(true);
+        // valor cacheado ya pintado arriba; esto lo confirma contra el servidor
+        refreshPremium();
       }
     })();
-  }, []);
+  }, [refreshPremium]);
 
   const persistHabits = useCallback((next: Habit[]) => {
     setHabits(next);
@@ -137,6 +158,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         setNotifTime,
         isPremium,
         setPremium,
+        refreshPremium,
         addHabit,
         updateHabit,
         removeHabit,

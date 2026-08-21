@@ -1,5 +1,5 @@
-import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ChallengesPanel from '../components/ChallengesPanel';
 import StreakPodium from '../components/StreakPodium';
@@ -7,10 +7,29 @@ import ProgressCharts from '../components/ProgressCharts';
 import { useStore } from '../store';
 import { useI18n } from '../i18n';
 import { theme } from '../theme';
+import { hasPayments } from '../config';
+import { startCheckout } from '../billing';
 
 export default function PremiumScreen() {
-  const { isPremium, setPremium } = useStore();
+  const { isPremium, setPremium, refreshPremium } = useStore();
   const { t } = useI18n();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
+
+  const buy = async () => {
+    setBusy(true);
+    setError(false);
+    const result = await startCheckout();
+    setBusy(false);
+    if (!result.ok && !result.cancelled) setError(true);
+  };
+
+  const restore = async () => {
+    setBusy(true);
+    setError(false);
+    await refreshPremium();
+    setBusy(false);
+  };
 
   if (!isPremium) {
     return (
@@ -42,17 +61,35 @@ export default function PremiumScreen() {
             </View>
           ))}
 
-          <Pressable onPress={() => setPremium(true)}>
+          <Pressable onPress={hasPayments ? buy : () => setPremium(true)} disabled={busy}>
             <LinearGradient
               colors={[...theme.gradients.primary]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.cta}
             >
-              <Text style={styles.ctaText}>{t('premiumUnlock')}</Text>
+              {busy ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.ctaText}>
+                  {hasPayments ? t('premiumBuy') : t('premiumUnlock')}
+                </Text>
+              )}
             </LinearGradient>
           </Pressable>
-          <Text style={styles.note}>{t('premiumLocalNote')}</Text>
+
+          {busy && <Text style={styles.note}>{t('premiumChecking')}</Text>}
+          {error && <Text style={styles.error}>{t('premiumError')}</Text>}
+
+          {hasPayments ? (
+            <Pressable onPress={restore} disabled={busy}>
+              <Text style={styles.restoreLink}>{t('premiumRestore')}</Text>
+            </Pressable>
+          ) : (
+            <Text style={styles.note}>
+              {t('premiumLocalNote')} · {t('premiumDevUnlock')}
+            </Text>
+          )}
         </LinearGradient>
       </ScrollView>
     );
@@ -117,6 +154,18 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     lineHeight: 16,
     textAlign: 'center',
+  },
+  error: {
+    color: theme.colors.danger,
+    fontSize: 12.5,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  restoreLink: {
+    color: theme.colors.subtext,
+    fontSize: 12.5,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
   footer: { alignItems: 'center', gap: 6, paddingTop: 4 },
   footerText: { color: theme.colors.cyan, fontSize: 12.5, fontWeight: '800' },

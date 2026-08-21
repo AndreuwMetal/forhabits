@@ -103,6 +103,11 @@ const es = {
   premiumActive: 'Premium activo',
   premiumLocalNote:
     'Activación local de prueba: todavía no hay compras reales conectadas.',
+  premiumBuy: 'Hazte Premium',
+  premiumRestore: 'Ya he pagado',
+  premiumChecking: 'Comprobando tu suscripción…',
+  premiumError: 'No se pudo completar la compra. Inténtalo de nuevo.',
+  premiumDevUnlock: 'Desbloqueo local (desarrollo)',
 
   // ── bolsa de retos ────────────────────────────────────────────────────────
   challengesTitle: 'Bolsa de retos',
@@ -125,6 +130,9 @@ const es = {
   challengesEmpty: 'Todavía no estás en ningún reto.',
   challengeSimulatedNote:
     'Participantes simulados en tu dispositivo hasta conectar el servidor.',
+  challengeSyncing: 'Sincronizando…',
+  challengeOffline:
+    'Sin conexión con el servidor: se muestran participantes simulados.',
 
   // ── podio de rachas ───────────────────────────────────────────────────────
   podiumTitle: 'Podio de rachas',
@@ -232,6 +240,11 @@ const en: Record<StringKey, string> = {
   premiumDisable: 'Turn Premium off',
   premiumActive: 'Premium active',
   premiumLocalNote: 'Local trial unlock: real purchases are not wired up yet.',
+  premiumBuy: 'Go Premium',
+  premiumRestore: 'I already paid',
+  premiumChecking: 'Checking your subscription…',
+  premiumError: 'Checkout could not be completed. Please try again.',
+  premiumDevUnlock: 'Local unlock (development)',
 
   // ── challenge pool ────────────────────────────────────────────────────────
   challengesTitle: 'Challenge pool',
@@ -254,6 +267,8 @@ const en: Record<StringKey, string> = {
   challengesEmpty: "You haven't joined any challenge yet.",
   challengeSimulatedNote:
     'Participants are simulated on your device until the server is connected.',
+  challengeSyncing: 'Syncing…',
+  challengeOffline: 'No server connection: showing simulated participants.',
 
   // ── streak podium ─────────────────────────────────────────────────────────
   podiumTitle: 'Streak podium',
