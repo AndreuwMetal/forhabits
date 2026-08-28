@@ -6,7 +6,8 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
@@ -15,23 +16,12 @@
       },
       "android": {
         "buildType": "apk"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
-      "autoIncrement": true
-    }
-  },
-  "submit": {
-    "production": {
-      "ios": {
-        "appleId": "TU_APPLE_ID@correo.com",
-        "ascAppId": "REEMPLAZAR_TRAS_CREAR_APP_EN_APP_STORE_CONNECT",
-        "appleTeamId": "REEMPLAZAR_CON_TU_TEAM_ID"
-      },
-      "android": {
-        "serviceAccountKeyPath": "./google-play-service-account.json",
-        "track": "internal"
-      }
+      "autoIncrement": true,
+      "channel": "production"
     }
   }
 }

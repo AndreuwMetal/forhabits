@@ -15,7 +15,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.andreuwmetal.forhabits",
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"],
+        "UIBackgroundModes": [
+          "remote-notification",
+          "remote-notification"
+        ],
         "NSUserNotificationsUsageDescription": "ForHabits te avisa cada día para registrar tus hábitos y te envía tu análisis semanal."
       }
     },
@@ -28,7 +31,10 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": ["RECEIVE_BOOT_COMPLETED", "SCHEDULE_EXACT_ALARM"]
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "RECEIVE_BOOT_COMPLETED"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -43,10 +49,17 @@
         }
       ]
     ],
+    "owner": "andreuwmetal",
     "extra": {
       "eas": {
-        "projectId": "REEMPLAZAR_TRAS_EAS_INIT"
+        "projectId": "c3149146-fa7d-4cc0-95ae-88360c317dd7"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c3149146-fa7d-4cc0-95ae-88360c317dd7"
     }
   }
 }
