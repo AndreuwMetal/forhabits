@@ -130,8 +130,17 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   emoji: { fontSize: 22 },
-  name: { flex: 1, fontSize: 16, color: theme.colors.text, fontWeight: '500' },
-  segment: { flexDirection: 'row', gap: 6 },
+  // En 360 px los botones dejaban 74 px al nombre y lo cortaban. Con un ancho
+  // minimo, la fila (que ya es flexWrap) manda los botones a una segunda linea
+  // y el nombre se lee entero.
+  name: {
+    flex: 1,
+    minWidth: 150,
+    fontSize: 16,
+    color: theme.colors.text,
+    fontWeight: '500',
+  },
+  segment: { flexDirection: 'row', gap: 6, marginLeft: 'auto' },
   segBtn: {
     paddingHorizontal: 10,
     paddingVertical: 7,
