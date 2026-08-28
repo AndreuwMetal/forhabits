@@ -46,7 +46,9 @@
           "icon": "./assets/icon.png",
           "color": "#B026FF"
         }
-      ]
+      ],
+      "expo-status-bar",
+      "./plugins/withBouncyCastlePin"
     ],
     "owner": "andreuwmetal",
     "extra": {
