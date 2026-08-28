@@ -113,3 +113,62 @@ comprobar actualizaciones (detallado en la política de privacidad).
 
 **Declaraciones adicionales:** ninguna. No se usan alarmas exactas, ni ubicación,
 ni cámara, ni contactos. El único permiso sensible es el de notificaciones.
+
+---
+
+## Google Play — campos exactos (copiar y pegar)
+
+**Nombre de la aplicación** (máx. 30)
+```
+ForHabits
+```
+
+**Descripción breve** (máx. 80)
+```
+Crea hábitos, mídelos cada día y mejora un 1%. Consejos y análisis semanal.
+```
+
+**Descripción completa** (máx. 4000, sin markdown: Play no renderiza `**`)
+```
+Lo que no se define no se puede medir. Lo que no se mide no se puede mejorar.
+
+ForHabits convierte el marco de las 4 leyes del cambio de conducta en una herramienta diaria, sencilla y visual para transformar tu vida un 1% cada día.
+
+REGISTRA Y MIDE CADA HÁBITO
+Crea los hábitos que quieres adquirir con su emoji, periodicidad, hora y lugar. Cada día recibes tu DailyLog para marcar lo que has cumplido, directamente desde la notificación y sin abrir la app. Tu calendario se va llenando con un vistazo claro de qué días lo lograste.
+
+UN ASESOR EN LAS 4 LEYES
+Escribe cualquier hábito y recibe consejos prácticos organizados según las 4 leyes del cambio de conducta:
+• Hazlo obvio
+• Hazlo atractivo
+• Hazlo sencillo
+• Hazlo satisfactorio
+Cada consejo llega en modo directo y con un ejemplo aplicado a tu hábito. También en modo inverso, para eliminar los malos hábitos.
+
+ANALÍTICAS QUE TE MOTIVAN
+Cada domingo recibes tu análisis semanal: una calificación del 0 al 10 por hábito, una gráfica de barras con tus repeticiones y tu porcentaje de mejora general basado en la regla del 1% diario. El último domingo de cada mes, un análisis mensual completo. Todo guardado y consultable desde la campanita de notificaciones.
+
+PENSADA PARA SER TUYA
+• Diseño oscuro, moderno y minimalista
+• Disponible en español e inglés
+• Racha diaria para mantener la motivación
+• Todos tus datos se guardan en tu dispositivo, sin cuentas ni servidores
+
+Empieza hoy. Define, mide, mejora.
+```
+
+**Recursos gráficos**
+
+| Campo | Archivo |
+|---|---|
+| Icono de la aplicación | `store/icon-512.png` |
+| Gráfico destacado | `store/feature-graphic.png` |
+| Capturas de teléfono | `store/capturas/1-registros.png`, `2-analisis-semanal.png`, `3-aplicar.png` |
+
+**Configuración de la ficha**
+
+| Campo | Valor |
+|---|---|
+| Categoría de la aplicación | Salud y bienestar |
+| Correo electrónico | `andresforjaai@gmail.com` |
+| Sitio web | `https://andreuwmetal.github.io/forhabits/` |
