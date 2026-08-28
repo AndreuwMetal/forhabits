@@ -57,7 +57,7 @@ const es = {
   heroDayComplete: '¡día completado! 🎉',
   heroTodayHabits: 'hábitos de hoy',
   applyHeading: '¿Qué hábito quieres trabajar?',
-  applySubtitle: 'Te asesoro con las 4 leyes de Hábitos Atómicos de James Clear.',
+  applySubtitle: 'Te asesoro con las 4 leyes del cambio de conducta.',
   buildMode: 'Adquirir hábito',
   breakMode: 'Eliminar hábito',
   searchPlaceholder: 'Ej: correr, leer, meditar…',
@@ -87,7 +87,7 @@ const es = {
   improvement: 'Mejora general',
   improvementGoal: 'Objetivo',
   improvementExplain:
-    'Basado en la regla del libro: mejora un 1% cada día (+7% a la semana). Se calcula como tu porcentaje de cumplimiento × 1% × días del periodo.',
+    'Basado en la regla del 1%: mejora un 1% cada día (+7% a la semana). Se calcula como tu porcentaje de cumplimiento × 1% × días del periodo.',
 };
 
 export type StringKey = keyof typeof es;
@@ -132,7 +132,7 @@ const en: Record<StringKey, string> = {
   heroDayComplete: 'day complete! 🎉',
   heroTodayHabits: "today's habits",
   applyHeading: 'Which habit do you want to work on?',
-  applySubtitle: "I'll coach you with the 4 laws of James Clear's Atomic Habits.",
+  applySubtitle: "I'll coach you with the 4 laws of behavior change.",
   buildMode: 'Build a habit',
   breakMode: 'Break a habit',
   searchPlaceholder: 'E.g.: run, read, meditate…',
@@ -162,7 +162,7 @@ const en: Record<StringKey, string> = {
   improvement: 'Overall improvement',
   improvementGoal: 'Goal',
   improvementExplain:
-    "Based on the book's rule: get 1% better every day (+7% per week). Calculated as your completion rate × 1% × days in the period.",
+    "Based on the 1% rule: get 1% better every day (+7% per week). Calculated as your completion rate × 1% × days in the period.",
 };
 
 const STRINGS: Record<Lang, Record<StringKey, string>> = { es, en };
