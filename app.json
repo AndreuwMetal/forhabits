@@ -16,7 +16,6 @@
       "bundleIdentifier": "com.andreuwmetal.forhabits",
       "infoPlist": {
         "UIBackgroundModes": [
-          "remote-notification",
           "remote-notification"
         ],
         "NSUserNotificationsUsageDescription": "ForHabits te avisa cada día para registrar tus hábitos y te envía tu análisis semanal."
@@ -32,7 +31,6 @@
       },
       "predictiveBackGestureEnabled": false,
       "permissions": [
-        "RECEIVE_BOOT_COMPLETED",
         "RECEIVE_BOOT_COMPLETED"
       ]
     },
