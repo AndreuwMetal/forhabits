@@ -24,7 +24,7 @@ export default function MainScreen() {
   return (
     <LinearGradient colors={[...theme.gradients.backdrop]} style={styles.root}>
       <View style={styles.header}>
-        <Text style={styles.brand}>
+        <Text style={styles.brand} numberOfLines={1}>
           For<Text style={styles.brandAccent}>Habits</Text>
         </Text>
         <View style={styles.headerRight}>
@@ -118,19 +118,20 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: 6,
     paddingBottom: 12,
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   brand: {
-    fontSize: 20,
+    flexShrink: 1,
+    fontSize: 18,
     fontWeight: '900',
     color: theme.colors.text,
     letterSpacing: 0.5,
   },
   brandAccent: { color: theme.colors.cyan },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   segment: {
     flexDirection: 'row',
     backgroundColor: theme.colors.surface,
@@ -140,17 +141,17 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.border,
   },
   segBtn: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     paddingVertical: 8,
     borderRadius: 999,
   },
   segActive: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     paddingVertical: 8,
     borderRadius: 999,
   },
-  segText: { fontSize: 13.5, fontWeight: '700', color: theme.colors.subtext },
-  segTextActive: { fontSize: 13.5, fontWeight: '800', color: '#fff' },
+  segText: { fontSize: 12.5, fontWeight: '700', color: theme.colors.subtext },
+  segTextActive: { fontSize: 12.5, fontWeight: '800', color: '#fff' },
   bellChip: {
     paddingHorizontal: 9,
     paddingVertical: 7,

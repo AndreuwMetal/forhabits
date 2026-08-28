@@ -25,7 +25,9 @@ import { MONTHS, WEEKDAY_LETTERS, useI18n } from '../i18n';
 import { theme } from '../theme';
 
 const FUTURE_MONTHS = 3;
-const ROW_HEIGHT = 58;
+// 4 + 28 (numero) + 2 + 2 lineas de emojis (24) = 58 justos: sin holgura los
+// emojis se salian de la fila en pantallas estrechas.
+const ROW_HEIGHT = 64;
 const TITLE_HEIGHT = 44;
 const WEEKDAY_ROW_HEIGHT = 20;
 const MONTH_MARGIN = 10;
@@ -225,10 +227,12 @@ const styles = StyleSheet.create({
   dayNum: { fontSize: 15, color: theme.colors.text },
   todayNum: { color: '#fff', fontWeight: '700' },
   emojis: {
-    fontSize: 10,
+    // a 10px los 4 emojis no caben en una celda de 360px de ancho y saltaban
+    // de linea, descuadrando la fila
+    fontSize: 9,
     textAlign: 'center',
     marginTop: 2,
-    lineHeight: 12,
-    maxWidth: '95%',
+    lineHeight: 11,
+    maxWidth: '100%',
   },
 });
