@@ -18,7 +18,8 @@
         "UIBackgroundModes": [
           "remote-notification"
         ],
-        "NSUserNotificationsUsageDescription": "ForHabits te avisa cada día para registrar tus hábitos y te envía tu análisis semanal."
+        "NSUserNotificationsUsageDescription": "ForHabits te avisa cada día para registrar tus hábitos y te envía tu análisis semanal.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
