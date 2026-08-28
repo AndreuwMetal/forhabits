@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+// SafeAreaView de react-native solo aplica margenes en iOS. Android dibuja
+// edge-to-edge desde el SDK 54, asi que hace falta el de safe-area-context.
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import IntroScreen from './src/screens/IntroScreen';
 import MainScreen from './src/screens/MainScreen';
 import DailyLogSheet from './src/components/DailyLogSheet';
@@ -64,11 +67,13 @@ function Root() {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <StoreProvider>
-        <Root />
-      </StoreProvider>
-    </LanguageProvider>
+    <SafeAreaProvider>
+      <LanguageProvider>
+        <StoreProvider>
+          <Root />
+        </StoreProvider>
+      </LanguageProvider>
+    </SafeAreaProvider>
   );
 }
 
