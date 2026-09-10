@@ -172,3 +172,39 @@ Empieza hoy. Define, mide, mejora.
 | Categoría de la aplicación | Salud y bienestar |
 | Correo electrónico | `andresforjaai@gmail.com` |
 | Sitio web | `https://andreuwmetal.github.io/forhabits/` |
+
+---
+
+## App Store Connect — pasos y campos
+
+**Pasos**
+1. Alta en el Apple Developer Program (developer.apple.com/programs/enroll).
+2. App Store Connect → Apps → ＋ Nueva app: plataforma iOS, nombre `ForHabits`
+   (si está cogido, prueba `ForHabits: hábitos diarios`), idioma principal Español (España),
+   bundle ID `com.andreuwmetal.forhabits`, SKU `forhabits`.
+3. `npm run build:ios:prod` — inicia sesión con tu Apple ID y deja que EAS genere certificados.
+4. `npm run submit:ios`.
+5. Rellena la ficha (abajo), selecciona el build y envía a revisión.
+
+**Capturas iPhone 6,9"** (1320×2868): `store/app-store/es/*.png` y `store/app-store/en/*.png`,
+en el orden del número del archivo. No hacen falta capturas de iPad: `supportsTablet` es `false`
+y en iPad la app se ejecuta en modo iPhone.
+
+| Campo | Valor |
+|---|---|
+| Categoría | Salud y forma física (principal) · Estilo de vida (secundaria) |
+| Precio | Gratis |
+| Clasificación por edad | Responde «No»/«Ninguno» a todo el cuestionario → 4+ |
+| Copyright | `2026 Andrés Mármol del Amo` |
+| Inicio de sesión necesario | No |
+| Cifrado (export compliance) | Ya declarado en `app.json` (`ITSAppUsesNonExemptEncryption: false`) |
+| Privacidad de la app | «Datos no recopilados» (sin cuentas, sin backend, sin tracking; ver nota de `expo-updates` arriba) |
+| Manifiesto de privacidad | Declarado en `app.json` → `ios.privacyManifests` |
+
+**Notas para el revisor** (App Review Information → Notes, en inglés)
+```
+No account or sign-in is required. All data is stored locally on the device; the app has no backend.
+To test: create a habit with the "+" card on the Records tab, then mark it as completed from the
+calendar day view. The Apply tab gives advice for any habit typed in the search box. Daily reminder
+notifications are optional and scheduled locally after granting the notification permission.
+```

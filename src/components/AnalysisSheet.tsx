@@ -36,6 +36,7 @@ function gradeColor(grade: number): string {
 export default function AnalysisSheet({ request, onClose }: Props) {
   const { habits, logs } = useStore();
   const { lang, t } = useI18n();
+  const dec = lang === 'es' ? ',' : '.';
 
   const analysis = useMemo(
     () =>
@@ -82,7 +83,7 @@ export default function AnalysisSheet({ request, onClose }: Props) {
                     style={[styles.gradeBadge, { borderColor: gradeColor(grade) }]}
                   >
                     <Text style={[styles.gradeText, { color: gradeColor(grade) }]}>
-                      {grade.toFixed(1).replace('.', ',')}
+                      {grade.toFixed(1).replace('.', dec)}
                     </Text>
                   </View>
                 </View>
@@ -128,7 +129,7 @@ export default function AnalysisSheet({ request, onClose }: Props) {
                 { color: goalReached ? theme.colors.success : theme.colors.cyan },
               ]}
             >
-              +{analysis.improvementPct.toFixed(1).replace('.', ',')}%
+              +{analysis.improvementPct.toFixed(1).replace('.', dec)}%
             </Text>
             <Text style={styles.improveGoal}>
               {t('improvementGoal')}: +{analysis.goalPct}%
