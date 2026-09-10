@@ -1,0 +1,53 @@
+name: EAS Build (ForHabits)
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Plataforma a compilar
+        type: choice
+        options: [all, ios, android]
+        default: all
+      profile:
+        description: Perfil de eas.json
+        type: choice
+        options: [preview, production, simulator]
+        default: preview
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Sin EXPO_TOKEN no se puede construir: se avisa en vez de fallar en seco.
+    steps:
+      - name: Comprobar que hay EXPO_TOKEN
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "::error::Falta el secreto EXPO_TOKEN. Crealo en https://expo.dev/settings/access-tokens y anadelo en Settings > Secrets > Actions."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Instalar dependencias
+        working-directory: .
+        run: npm ci
+
+      - name: Lanzar build en EAS
+        working-directory: .
+        run: |
+          eas build \
+            --non-interactive \
+            --no-wait \
+            --platform "${{ inputs.platform }}" \
+            --profile "${{ inputs.profile }}"
