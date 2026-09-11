@@ -35,7 +35,8 @@
   "submit": {
     "production": {
       "ios": {
-        "bundleIdentifier": "com.andreuwmetal.forhabits"
+        "bundleIdentifier": "com.andreuwmetal.forhabits",
+        "ascAppId": "6811187504"
       },
       "android": {
         "track": "internal",
