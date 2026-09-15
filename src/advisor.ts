@@ -54,7 +54,7 @@ export function buildAdvice(
   return laws.map((law) => ({
     law,
     items: law.strategies.map((strategy) => ({
-      strategy,
+      strategy: { ...strategy, concept: fill(strategy.concept, habit, ctx) },
       applied: fill(strategy.template, habit, ctx),
       example: fill(strategy.example, habit, ctx),
     })),

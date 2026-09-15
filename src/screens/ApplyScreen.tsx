@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { buildAdvice, AdviceMode, LawAdvice } from '../advisor';
+import { buildAdvice, AdviceMode } from '../advisor';
 import { useStore } from '../store';
 import { useI18n } from '../i18n';
 import { theme } from '../theme';
@@ -20,9 +20,23 @@ export default function ApplyScreen() {
   const { lang, t } = useI18n();
   const [query, setQuery] = useState('');
   const [mode, setMode] = useState<AdviceMode>('build');
-  const [advice, setAdvice] = useState<LawAdvice[] | null>(null);
   const [adviceFor, setAdviceFor] = useState('');
   const [openLaw, setOpenLaw] = useState<string | null>(null);
+
+  // derivado, no guardado: así se regenera al cambiar de idioma
+  const advice = useMemo(() => {
+    if (!adviceFor) return null;
+    // si el hábito está registrado, personaliza [HORA] y [LUGAR]
+    const registered = habits.find(
+      (h) => h.name.trim().toLowerCase() === adviceFor.toLowerCase()
+    );
+    return buildAdvice(
+      adviceFor,
+      mode,
+      { time: registered?.time, place: registered?.place },
+      lang
+    );
+  }, [adviceFor, mode, habits, lang]);
 
   const suggestions = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -35,20 +49,8 @@ export default function ApplyScreen() {
   const consult = (name: string) => {
     const habit = name.trim();
     if (!habit) return;
-    // si el hábito está registrado, personaliza [HORA] y [LUGAR]
-    const registered = habits.find(
-      (h) => h.name.trim().toLowerCase() === habit.toLowerCase()
-    );
     setQuery(habit);
     setAdviceFor(habit);
-    setAdvice(
-      buildAdvice(
-        habit,
-        mode,
-        { time: registered?.time, place: registered?.place },
-        lang
-      )
-    );
     setOpenLaw(null);
   };
 
@@ -70,7 +72,7 @@ export default function ApplyScreen() {
             style={[styles.modeChip, mode === 'build' && styles.modeActive]}
             onPress={() => {
               setMode('build');
-              setAdvice(null);
+              setAdviceFor('');
             }}
           >
             <Text style={[styles.modeText, mode === 'build' && styles.modeTextOn]}>
@@ -81,7 +83,7 @@ export default function ApplyScreen() {
             style={[styles.modeChip, mode === 'break' && styles.modeActive]}
             onPress={() => {
               setMode('break');
-              setAdvice(null);
+              setAdviceFor('');
             }}
           >
             <Text style={[styles.modeText, mode === 'break' && styles.modeTextOn]}>
@@ -98,7 +100,7 @@ export default function ApplyScreen() {
             value={query}
             onChangeText={(t) => {
               setQuery(t);
-              setAdvice(null);
+              setAdviceFor('');
             }}
             onSubmitEditing={() => consult(query)}
             returnKeyType="search"
